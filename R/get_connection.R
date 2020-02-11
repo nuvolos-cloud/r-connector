@@ -21,7 +21,7 @@ get_connection <- function(dbname, schemaname) {
   } else if (file.exists(path_user) && file.exists(path_token) ) {
 	print("Using secret files.")
 	con_user <- file(path_user, "r")
-	line_user <- readlines(con_user, n = 1)
+	line_user <- readLines(con_user, n = 1)
 	close(con_user)
 
 	if( length(line_user) == 0)
@@ -29,7 +29,7 @@ get_connection <- function(dbname, schemaname) {
 	username <- line_user
 
 	con_pw <- file("", "r")
-	line_pw <- readlines(con_pw, n = 1)
+	line_pw <- readLines(con_pw, n = 1)
 	close(con_pw)
 	
 	if (length(line_pw) == 0 )
