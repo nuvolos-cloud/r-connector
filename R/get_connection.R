@@ -13,11 +13,13 @@ get_connection <- function(dbname, schemaname) {
 	path_token <- '/secrets/snowflake_access_token'
 
   if (file.exists("~/.odbc.ini")) {
+	 print("Using odbc.ini file.")
     inifile <- ini::read.ini('~/.odbc.ini')
 
     username <- inifile$nuvolos$uid
     password <- inifile$nuvolos$pwd
   } else if (file.exists(path_user) && file.exists(path_token) ) {
+	print("Using secret files.")
 	con_user <- file(path_user, "r")
 	line_user <- readlines(con_user, n = 1)
 	close(con_user)
