@@ -13,5 +13,5 @@ get_connection(dbname, schemaname)
 }
 \description{
 Function get_connection(dbname, schemaname)
-Creates a new connection to schema dbname.schemaname
+Creates a new connection to schema dbname.schemaname. If both arguments are left NULL (empty), get_connection will try to figure out the appropriate parameters by calling get_nuvolos_db_path().
 }
