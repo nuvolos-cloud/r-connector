@@ -8,7 +8,7 @@ remotes::install_github("nuvolos-cloud/r-connector")
 # Usage
 
 ```
-con <- nuvolos::getDataHubCon("DM", "SAMPLE_DB")
+con <- nuvolos::get_connection("\"organization_name/space_name\"", "\"instance_name/snapshot_name\"")
 ```
 
 # Usage in Nuvolos applications
