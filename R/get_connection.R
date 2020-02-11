@@ -28,7 +28,7 @@ get_connection <- function(dbname, schemaname) {
 		stop(paste0('Could not parse username file, first line of ', path_user, ' is empty.'))
 	username <- line_user
 
-	con_pw <- file("", "r")
+	con_pw <- file(path_token, "r")
 	line_pw <- readLines(con_pw, n = 1)
 	close(con_pw)
 	
