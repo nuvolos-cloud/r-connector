@@ -1,7 +1,7 @@
 #' R connector for Nuvolos.cloud
 #'
 #' Function get_connection(dbname, schemaname)
-#' Creates a new connection to schema dbname.schemaname
+#' Creates a new connection to schema dbname.schemaname. 
 #'
 #' @param dbname The database (organization + space) to connect to
 #' @param schemaname The schema (instance + state) to connect to
@@ -83,7 +83,7 @@ get_connection <- function(dbname, schemaname) {
 
 #' Function get_nuvolos_db_path()
 #' In Nuvolos applications returns the database name and schema name
-#' Outside Nuvolos it will return with an error.
+#' Outside Nuvolos it will return with an error: please refer to the connection guide for detailed information on database and schema names for out-of-Nuvolos usage.
 #'
 #' @export
 get_nuvolos_db_path <- function() {
