@@ -21,7 +21,7 @@ get_connection <- function(dbname, schemaname) {
   } else if (file.exists(path_user) && file.exists(path_token) ) {
 	print("Using secret files.")
 	con_user <- file(path_user, "r")
-	line_user <- readLines(con_user, n = 1)
+	line_user <- readLines(con_user, n = 1, warn = FALSE)
 	close(con_user)
 
 	if( length(line_user) == 0)
@@ -29,7 +29,7 @@ get_connection <- function(dbname, schemaname) {
 	username <- line_user
 
 	con_pw <- file(path_token, "r")
-	line_pw <- readLines(con_pw, n = 1)
+	line_pw <- readLines(con_pw, n = 1, warn = FALSE)
 	close(con_pw)
 	
 	if (length(line_pw) == 0 )
@@ -92,7 +92,7 @@ get_nuvolos_db_path <- function() {
     stop(paste0('Could not find dbpath file ', path_filename, '.'))
 
   con = file(path_filename, "r")
-  line = readLines(con, n = 1)
+  line = readLines(con, n = 1, warn = FALSE)
   close(con)
 
   if (length(line) == 0)
