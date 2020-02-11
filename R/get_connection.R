@@ -1,13 +1,24 @@
 #' R connector for Nuvolos.cloud
 #'
 #' Function get_connection(dbname, schemaname)
-#' Creates a new connection to schema dbname.schemaname. 
+#' Creates a new connection to schema dbname.schemaname. If both arguments are NULL then get_connection will try to call get_nuvolos_db_path().
 #'
 #' @param dbname The database (organization + space) to connect to
 #' @param schemaname The schema (instance + state) to connect to
 #' @export
-get_connection <- function(dbname, schemaname) {
+get_connection <- function(dbname = NULL, schemaname = NULL) {
   require(DBI)
+	
+	if (is.null(dbname) && is.null(schemaname)) {
+		conn_info <- get_nuvolos_db_path()
+		dbname <- conn_info$dbname
+		schemaname <- conn_info$schemaname
+	} else if (is.null(dbname) && !is.null(schemaname)) {
+		stop("Inconsistent input: dbname is NULL but schemaname is not. Please specify a dbname argument or leave both arguments NULL.")
+	} else if (!is.null(dbname) && is.null(schemaname)) {
+		stop("Inconsistent input: dbname is not NULL but schemaname is. Please specify a schemaname argument or leave both arguments NULL.")
+	} else {
+	}
 
 	path_user <- '/secrets/username'
 	path_token <- '/secrets/snowflake_access_token'
