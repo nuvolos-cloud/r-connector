@@ -4,14 +4,34 @@
 \alias{get_connection}
 \title{R connector for Nuvolos.cloud}
 \usage{
-get_connection(dbname, schemaname)
+get_connection(
+  username = NULL,
+  password = NULL,
+  dbname = NULL,
+  schemaname = NULL
+)
 }
 \arguments{
+\item{username}{The Nuvolos username of the connecting user. To obtain the username, please consult the connection guide on Nuvolos.}
+
+\item{password}{The Nuvolos password of the connecting user. To obtain the password, please consult the connection guide on Nuvolos.}
+
 \item{dbname}{The database (organization + space) to connect to}
 
 \item{schemaname}{The schema (instance + state) to connect to}
 }
+\value{
+Return an ODBC connection object.
+}
 \description{
 Function get_connection(dbname, schemaname)
-Creates a new connection to schema dbname.schemaname. If both arguments are left NULL (empty), get_connection will try to figure out the appropriate parameters by calling get_nuvolos_db_path().
+Creates a new connection to schema dbname.schemaname. If both arguments are NULL then get_connection will try to call get_nuvolos_db_path().
+}
+\examples{
+con <- get_connection()
+con <- get_connection(dbname = "my_database", schemaname = "my_schema")
+con <- get_connection(username = "my_user", 
+                      password = "my_password", 
+                      dbname = "my_database", schemaname = "my_schema")
+
 }

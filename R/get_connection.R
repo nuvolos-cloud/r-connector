@@ -12,7 +12,9 @@
 #' @examples
 #' con <- get_connection()
 #' con <- get_connection(dbname = "my_database", schemaname = "my_schema")
-#' con <- get_connection(username = "my_user", password = "my_password", dbname = "my_database", schemaname = "my_schema")
+#' con <- get_connection(username = "my_user", 
+#'                       password = "my_password", 
+#'                       dbname = "my_database", schemaname = "my_schema")
 #'
 #' @export
 get_connection <- function(username = NULL, password = NULL, dbname = NULL, schemaname = NULL) {
@@ -31,7 +33,7 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
    }
 
    # Only accept username and password together. If both are missing, resort to relying on using Kube secret files to substitute.
-   if (is.null(username) && is.null(password) {
+   if (is.null(username) && is.null(password) ) {
 
       path_user <- '/secrets/username'
       path_token <- '/secrets/snowflake_access_token'
@@ -58,9 +60,9 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
       }
   
 
-   } else if(is.null(username) && !is.null(password) {
+   } else if(is.null(username) && !is.null(password) ) {
       stop("Inconsistent input: username is NULL, but password was provided. Please specify a username or leave both arguments as NULL.")
-   } else if(!is.null(username) && is.null(password) {
+   } else if(!is.null(username) && is.null(password) ) {
       stop("Inconsistent input: password is NULL, but username was provided. Please specify a password or leave both arguments as NULL.")
    }
 
