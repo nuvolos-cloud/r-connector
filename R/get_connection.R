@@ -76,7 +76,6 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
                   server="alphacruncher.eu-central-1.snowflakecomputing.com",
                   database=dbname,
                   schema=schemaname,
-                  warehouse=username,
                   role=username,
                   tracing=0)
 
@@ -88,7 +87,6 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
                   server = "alphacruncher.eu-central-1.snowflakecomputing.com",
                   database = dbname,
                   schema = schemaname,
-                  warehouse = username,
                   role = username,
                   tracing = 0)
 
@@ -100,7 +98,6 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
                   server="alphacruncher.eu-central-1.snowflakecomputing.com",
                   database=dbname,
                   schema=schemaname,
-                  warehouse=username,
                   role=username,
                   tracing=0)
    }
