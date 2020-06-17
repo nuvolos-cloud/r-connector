@@ -109,7 +109,9 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
 }
 
 #' Function get_nuvolos_db_path()
-#' In Nuvolos applications returns the database name and schema name
+#' 
+#' In Nuvolos applications returns the database name and schema name.
+#' 
 #' Outside Nuvolos it will return with an error: please refer to the connection guide for detailed information on database and schema names for out-of-Nuvolos usage.
 #'
 #' @export
