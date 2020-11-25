@@ -187,14 +187,14 @@ credd_from_local <- function(){
   tryCatch({
     username = keyring::key_get("nuvolos", "username")
   }, error = function (){
-    username <- rstudioapi::askForSecret(name = "nuvolos", message = "Please input your Nuvolos username:", title = 'Nuvolos username')
+    username <- rstudioapi::askForSecret(name = "username", message = "Please input your Nuvolos username:", title = 'Nuvolos username')
     keyring::key_set_with_value("nuvolos", "username", username)
   })
   
   tryCatch({
     password = keyring::key_get("nuvolos", username)
   }, error = function (){
-    password <- rstudioapi::askForSecret(name = "nuvolos", message = "Please input your Nuvolos password:", title = 'Nuvolos password')
+    password <- rstudioapi::askForSecret(name = "password", message = "Please input your Nuvolos password:", title = 'Nuvolos password')
     keyring::key_set_with_value("nuvolos", username, password)
   })
   return(c(username, password))
