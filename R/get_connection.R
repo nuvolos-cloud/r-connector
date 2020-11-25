@@ -88,7 +88,7 @@ get_connection <- function(...) {
         username = cred[1]
         password = cred[2]
       }, error = function(e) {
-        stop("You are not using a Nuvolos application. Please provide both username and password arguments to establish a connection. In your R's console, please add your credentials by this command: input_nuvolos_credential('your_user_name', 'your_password')")
+        stop("You are not using a Nuvolos application. Please provide both username and password arguments to establish a connection. In your R's console, please add your credentials by this command: input_nuvolos_credential()")
       })
     }
     
@@ -100,7 +100,7 @@ get_connection <- function(...) {
   }
   
   sysname  <- Sys.info()["sysname"]
-
+  
   if (sysname == "Linux") {
     con <- odbc::dbConnect(odbc::odbc(),
                            uid=username,
@@ -172,15 +172,29 @@ get_nuvolos_db_path <- function() {
 #' 
 #' Using outside of Nuvolos only. This helps the user to store credentials safely at local device.
 #' @export
-input_nuvolos_credential <- function(username, password){
+input_nuvolos_credential <- function(){
   # store username & password
+  username <- rstudioapi::askForSecret("Please input your Nuvolos username:")
   keyring::key_set_with_value("nuvolos", "username", username)
+  
+  password <- rstudioapi::askForSecret("Please input your Nuvolos password:")
   keyring::key_set_with_value("nuvolos", username, password)
 }
 
 credd_from_local <- function(){
   # retrieve username & password
-  username = keyring::key_get("nuvolos", "username")
-  password = keyring::key_get("nuvolos", username)
+  tryCatch({
+    username = keyring::key_get("nuvolos", "username")
+  }, error = function (){
+    username <- rstudioapi::askForSecret("Please input your Nuvolos username:")
+    keyring::key_set_with_value("nuvolos", "username", username)
+  })
+  
+  tryCatch({
+    password = keyring::key_get("nuvolos", username)
+  }, error = function (){
+    password <- rstudioapi::askForSecret("Please input your Nuvolos password:")
+    keyring::key_set_with_value("nuvolos", username, password)
+  })
   return(c(username, password))
 }
