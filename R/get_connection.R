@@ -175,10 +175,10 @@ get_nuvolos_db_path <- function() {
 #' @export
 input_nuvolos_credential <- function(){
   # store username & password
-  username <- rstudioapi::askForSecret("Please input your Nuvolos username:")
+  username <- rstudioapi::askForSecret(name = "username", message = "Please input your Nuvolos username:", title = 'Nuvolos username')
   keyring::key_set_with_value("nuvolos", "username", username)
   
-  password <- rstudioapi::askForSecret("Please input your Nuvolos password:")
+  password <- rstudioapi::askForSecret(name = "password", message = "Please input your Nuvolos password:", title = 'Nuvolos password')
   keyring::key_set_with_value("nuvolos", username, password)
 }
 
