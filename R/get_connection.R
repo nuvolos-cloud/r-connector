@@ -85,11 +85,12 @@ get_connection <- function(...) {
     } else {
       tryCatch({
         cred = credd_from_local()
-        username = cred[1]
-        password = cred[2]
       }, error = function(e) {
-        stop("You are not using a Nuvolos application. Please provide both username and password arguments to establish a connection. In your R's console, please add your credentials by this command: input_nuvolos_credential()")
+        input_nuvolos_credential()
+        cred = credd_from_local()
       })
+      username = cred[1]
+      password = cred[2]
     }
     
     
