@@ -102,41 +102,50 @@ get_connection <- function(...) {
   
   sysname  <- Sys.info()["sysname"]
   
-  if (sysname == "Linux") {
+  db_con <- tryCatch({
+    if (sysname == "Linux") {
     con <- odbc::dbConnect(odbc::odbc(),
-                           uid=username,
-                           pwd=password,
-                           driver="SnowflakeDSIIDriver",
-                           server="alphacruncher.eu-central-1.snowflakecomputing.com",
-                           database=dbname,
-                           schema=schemaname,
-                           role=username,
-                           tracing=0)
-    
-  } else if (sysname == "Windows") {
+                            uid=username,
+                            pwd=password,
+                            driver="SnowflakeDSIIDriver",
+                            server="alphacruncher.eu-central-1.snowflakecomputing.com",
+                            database=dbname,
+                            schema=schemaname,
+                            role=username,
+                            tracing=0)
+
+    } else if (sysname == "Windows") {
     con <- odbc::dbConnect(odbc::odbc(),
-                           uid = username,
-                           pwd = password,
-                           driver = "SnowflakeDSIIDriver",
-                           server = "alphacruncher.eu-central-1.snowflakecomputing.com",
-                           database = dbname,
-                           schema = schemaname,
-                           role = username,
-                           tracing = 0)
-    
-  } else if (sysname == "Darwin") {
+                            uid = username,
+                            pwd = password,
+                            driver = "SnowflakeDSIIDriver",
+                            server = "alphacruncher.eu-central-1.snowflakecomputing.com",
+                            database = dbname,
+                            schema = schemaname,
+                            role = username,
+                            tracing = 0)
+
+    } else if (sysname == "Darwin") {
     con <- odbc::dbConnect(odbc::odbc(),
-                           uid=username,
-                           pwd=password,
-                           driver="/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib",
-                           server="alphacruncher.eu-central-1.snowflakecomputing.com",
-                           database=dbname,
-                           schema=schemaname,
-                           role=username,
-                           tracing=0)
-  }
-  options(odbc.batch_rows = 10000)
-  return(con)
+                            uid=username,
+                            pwd=password,
+                            driver="/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib",
+                            server="alphacruncher.eu-central-1.snowflakecomputing.com",
+                            database=dbname,
+                            schema=schemaname,
+                            role=username,
+                            tracing=0)
+    }
+    options(odbc.batch_rows = 10000)
+    return(con)
+  },
+  error = function(e) {
+    con <- DBI::dbConnect(RJDBC::JDBC('net.snowflake.client.jdbc.SnowflakeDriver',system.file('snowflake-jdbc.jar',package="nuvolos")),
+                            sprintf("jdbc:snowflake://alphacruncher.eu-central-1.snowflakecomputing.com/?user=%s&password=%s&role=%s&db=%s&schema=%s&tracing=0",username,utils::URLencode(password),username,utils::URLencode(dbname),utils::URLencode(schemaname)))
+    return(con)
+  })
+
+  return(db_con)
 }
 
 #' Function get_nuvolos_db_path()
