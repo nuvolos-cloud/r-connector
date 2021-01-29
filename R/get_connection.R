@@ -27,10 +27,10 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
     conn_param = get_nuvolos_info(username, password, dbname, schemaname)
   }
   
-  username = conn_param[[1]]
-  password = conn_param[[2]]
-  dbname = conn_param[[3]]
-  schemaname = conn_param[[4]]
+  username = conn_param[['username']]
+  password = conn_param[['password']]
+  dbname = conn_param[['dbname']]
+  schemaname = conn_param[['schemaname']]
   
   sysname  <- Sys.info()["sysname"]
   if (sysname == "Linux") {
@@ -123,7 +123,7 @@ credd_from_local <- function(){
     password <- rstudioapi::askForSecret(name = "password", message = "Please input your Nuvolos password:", title = 'Nuvolos password')
     keyring::key_set_with_value("nuvolos", username, password)
   })
-  return(c(username, password))
+  return(list('username'=username, 'password'=password))
 }
 
 #' check if the environment is local or in nuvolos
@@ -145,8 +145,8 @@ get_local_info <- function(username = NULL, password = NULL, dbname = NULL, sche
       input_nuvolos_credential()
       cred = credd_from_local()
     })
-    username = cred[1]
-    password = cred[2]
+    username = cred[['username']]
+    password = cred[['password']]
   } else if(is.null(username) && !is.null(password) ) {
     stop("Inconsistent input: username is missing, but password was provided. Please specify a username or leave both arguments as NULL.")
   } else if(!is.null(username) && is.null(password) ) {
@@ -159,7 +159,7 @@ get_local_info <- function(username = NULL, password = NULL, dbname = NULL, sche
     stop("Inconsistent input: please provide both dbname and schemaname.")
   }
   
-  return(list(username, password, dbname, schemaname))
+  return(list('username'=username, 'password'=password, 'dbname'=dbname, 'schemaname'=schemaname))
 }
 
 get_nuvolos_info <- function(username = NULL, password = NULL, dbname = NULL, schemaname = NULL){
@@ -168,7 +168,11 @@ get_nuvolos_info <- function(username = NULL, password = NULL, dbname = NULL, sc
     conn_info <- get_nuvolos_db_path()
     dbname <- conn_info$dbname
     schemaname <- conn_info$schemaname
-  } 
+  } else if(is.null(dbname) && !is.null(schemaname) ) {
+    stop("Inconsistent input: dbname is missing. Please provide both dbname and schemaname, or leave both NULL.")
+  } else if(!is.null(dbname) && is.null(schemaname) ) {
+    stop("Inconsistent input: schemaname is missing. Please provide both dbname and schemaname, or leave both NULL.")
+  }
   
   # Using Kube secret files to substitute.
   if (is.null(username) && is.null(password)) {
@@ -177,25 +181,26 @@ get_nuvolos_info <- function(username = NULL, password = NULL, dbname = NULL, sc
     path_token <- '/secrets/snowflake_access_token'
     
     if (file.exists(path_user) && file.exists(path_token)) {
-      print("Using secret files.")
       con_user <- file(path_user, "r")
       line_user <- readLines(con_user, n = 1, warn = FALSE)
       close(con_user)
       
-      if( length(line_user) == 0)
+      if( length(line_user) == 0){
         stop(paste0('Could not parse username file, first line of ', path_user, ' is empty.'))
+      }
       username <- line_user
       
       con_pw <- file(path_token, "r")
       line_pw <- readLines(con_pw, n = 1, warn = FALSE)
       close(con_pw)
       
-      if (length(line_pw) == 0 )
+      if (length(line_pw) == 0 ){
         stop(paste0('Could not parse token file, first line of ', path_token ,' is empty.'))
+      }
       password <- line_pw
     } else {
       stop("Cannot find correct credential...")
     }
   }
-  return(list(username, password, dbname, schemaname))
+  return(list('username'=username, 'password'=password, 'dbname'=dbname, 'schemaname'=schemaname))
 }
