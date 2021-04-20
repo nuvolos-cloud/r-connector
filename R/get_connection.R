@@ -18,13 +18,16 @@
 #'
 #' @export
 get_connection <- function(username = NULL, password = NULL, dbname = NULL, schemaname = NULL){
-  require(DBI)
   require(keyring)
+  require(reticulate)
   
   if (is_local()){
+    py_install("nuvolos", pip =TRUE)
     conn_param = get_local_info(username, password, dbname, schemaname)
   } else {
+    py_install("nuvolos-odbc", pip =TRUE)
     conn_param = get_nuvolos_info(username, password, dbname, schemaname)
+    
   }
   
   username = conn_param[['username']]
@@ -32,41 +35,13 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   dbname = conn_param[['dbname']]
   schemaname = conn_param[['schemaname']]
   
-  sysname  <- Sys.info()["sysname"]
-  if (sysname == "Linux") {
-    con <- odbc::dbConnect(odbc::odbc(),
-                           uid=username,
-                           pwd=password,
-                           driver="SnowflakeDSIIDriver",
-                           server="alphacruncher.eu-central-1.snowflakecomputing.com",
-                           database=dbname,
-                           schema=schemaname,
-                           role=username,
-                           tracing=0)
-
-  } else if (sysname == "Windows") {
-    con <- odbc::dbConnect(odbc::odbc(),
-                           uid = username,
-                           pwd = password,
-                           driver = "SnowflakeDSIIDriver",
-                           server = "alphacruncher.eu-central-1.snowflakecomputing.com",
-                           database = dbname,
-                           schema = schemaname,
-                           role = username,
-                           tracing = 0)
-
-  } else if (sysname == "Darwin") {
-    con <- odbc::dbConnect(odbc::odbc(),
-                           uid=username,
-                           pwd=password,
-                           driver="/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib",
-                           server="alphacruncher.eu-central-1.snowflakecomputing.com",
-                           database=dbname,
-                           schema=schemaname,
-                           role=username,
-                           tracing=0)
-  }
-  options(odbc.batch_rows = 10000)
+  nuvolos <- import("nuvolos")
+  pd <- import("pandas")
+  
+  con <- nuvolos$get_connection(username = username,
+                                 password = password,
+                                 dbname = dbname,
+                                 schemaname = schemaname)
   return(con)
 }
 
@@ -142,6 +117,7 @@ get_local_info <- function(username = NULL, password = NULL, dbname = NULL, sche
     tryCatch({
       cred = credd_from_local()
     }, error = function(e) {
+      browser()
       input_nuvolos_credential()
       cred = credd_from_local()
     })
@@ -204,3 +180,4 @@ get_nuvolos_info <- function(username = NULL, password = NULL, dbname = NULL, sc
   }
   return(list('username'=username, 'password'=password, 'dbname'=dbname, 'schemaname'=schemaname))
 }
+
