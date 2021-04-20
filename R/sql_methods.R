@@ -1,7 +1,11 @@
 require(reticulate)
 
 #imoporting python-based nuvolos connector package and pandas
+
+#' @export
 nuvolos <- import("nuvolos")
+
+#' @export
 pd <- import("pandas")
 
 #' @export
