@@ -4,12 +4,14 @@ require(reticulate)
 nuvolos <- import("nuvolos")
 pd <- import("pandas")
 
+#' @export
 dbGetQuery <- function(sql, con){
 
   # using python's pandas.read_sql() method 
   return(pd$read_sql(sql, con))
 }
 
+#' @export
 dbWriteTable <- function(dbname,
                          name,
                          con,
@@ -25,6 +27,7 @@ dbWriteTable <- function(dbname,
                  if_exists="fail", index=TRUE, index_label=NULL, nanoseconds=FALSE))
 }
 
+#' @export
 dbExecute <- function(sql, con){
 
   # using python's execute method on the established connection
