@@ -21,10 +21,10 @@ get_connection(
 \item{schemaname}{The schema (instance + state) to connect to}
 }
 \value{
-Return an sqlalchemy connection object.
+Returns a pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device.
 }
 \description{
-Function get_connection(dbname, schemaname)
+Function get_connection(dbname, schemaname).
 Creates a new connection to schema dbname.schemaname. If both arguments are NULL then get_connection will try to call get_nuvolos_db_path().
 }
 \examples{

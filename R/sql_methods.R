@@ -15,11 +15,11 @@ tryCatch({
 
 #' Execute SQL SELECT statements from Nuvolos.cloud
 #'
-#' Function dbGetQuery(sql, con)
+#' Function dbGetQuery(sql, con).
 #' Executes SELECT SQL statements in the connected Nuvolos schema. 
 #' 
 #' @param sql SQL statement to be executed. Make sure to use quotes around table names.
-#' @param con SQLalchemy connection object that can be created by get_connection function.
+#' @param con pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.
 #' @return Returns an R dataframe object.
 #'
 #' @example
@@ -46,7 +46,7 @@ dbGetQuery <- function(sql, con){
 #' 
 #' @param dbname Name of the R dataframe to be written to a table.
 #' @param name The name of the database table. It will only be quoted and case sensitive if it contains keywords or special chars
-#' @param con SQLalchemy connection object that can be created by get_connection function.
+#' @param con pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.
 #' @param database The name of the database to which data will be inserted.
 #' @param schema The name of the schema to which data will be inserted.
 #' @param if_exists: How to behave if the table already exists. {‘fail’, ‘replace’, ‘append’}, default ‘fail’
@@ -88,8 +88,8 @@ dbWriteTable <- function(dbname,
 #' Executes any SQL statement in the connected Nuvolos schema. 
 #' 
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
-#' @param con SQLalchemy connection object that can be created by get_connection function.
-#' @return Returns the result of the python's execute method.
+#' @param con pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.
+#' @return Returns the result of python's execute method.
 #' 
 #' @examples  
 #' dbExecute("DROP TABLE table", con)

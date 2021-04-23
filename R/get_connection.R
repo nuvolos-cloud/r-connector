@@ -1,13 +1,13 @@
 #' R connector for Nuvolos.cloud
 #'
-#' Function get_connection(dbname, schemaname)
+#' Function get_connection(dbname, schemaname).
 #' Creates a new connection to schema dbname.schemaname. If both arguments are NULL then get_connection will try to call get_nuvolos_db_path().
 #' 
 #' @param username The Nuvolos username of the connecting user. To obtain the username, please consult the connection guide on Nuvolos.
 #' @param password The Nuvolos password of the connecting user. To obtain the password, please consult the connection guide on Nuvolos.
 #' @param dbname The database (organization + space) to connect to
 #' @param schemaname The schema (instance + state) to connect to
-#' @return Return an sqlalchemy connection object.
+#' @return Returns a pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device.
 #'
 #' @examples
 #' con <- get_connection()

@@ -21,7 +21,7 @@ dbWriteTable(
 
 \item{name}{The name of the database table. It will only be quoted and case sensitive if it contains keywords or special chars}
 
-\item{con}{SQLalchemy connection object that can be created by get_connection function.}
+\item{con}{pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.}
 
 \item{database}{The name of the database to which data will be inserted.}
 

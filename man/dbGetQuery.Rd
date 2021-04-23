@@ -9,12 +9,12 @@ dbGetQuery(sql, con)
 \arguments{
 \item{sql}{SQL statement to be executed. Make sure to use quotes around table names.}
 
-\item{con}{SQLalchemy connection object that can be created by get_connection function.}
+\item{con}{pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.}
 }
 \value{
 Returns an R dataframe object.
 }
 \description{
-Function dbGetQuery(sql, con)
+Function dbGetQuery(sql, con).
 Executes SELECT SQL statements in the connected Nuvolos schema.
 }

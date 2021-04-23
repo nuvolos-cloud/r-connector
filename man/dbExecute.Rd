@@ -9,10 +9,10 @@ dbExecute(sql, con)
 \arguments{
 \item{sql}{SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).}
 
-\item{con}{SQLalchemy connection object that can be created by get_connection function.}
+\item{con}{pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.}
 }
 \value{
-Returns the result of the python's execute method.
+Returns the result of python's execute method.
 }
 \description{
 Function dbExecute(sql, con).
