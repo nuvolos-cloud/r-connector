@@ -7,7 +7,7 @@
 #' @param password The Nuvolos password of the connecting user. To obtain the password, please consult the connection guide on Nuvolos.
 #' @param dbname The database (organization + space) to connect to
 #' @param schemaname The schema (instance + state) to connect to
-#' @return Return an ODBC connection object.
+#' @return Return an sqlalchemy connection object.
 #'
 #' @examples
 #' con <- get_connection()
@@ -81,8 +81,17 @@ get_nuvolos_db_path <- function() {
   return(list(dbname = db_name, schemaname = schema_name))
 }
 
+
+#' Input credentials to connect Nuvolos.cloud from local device
+#'
 #' Function input_nuvolos_credential()
 #' Using outside of Nuvolos only. This helps the user to store credentials safely at local device.
+#' Should be called only when there was a wrong input in the first place. It overwrites the previously entered credentials.
+#' @return Returns a pop-up window to enter the credentials.
+#' 
+#' @example
+#' input_nuvolos_crendential()
+#' 
 #' @export
 input_nuvolos_credential <- function(){
   # store username & password
