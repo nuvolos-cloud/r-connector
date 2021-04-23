@@ -120,7 +120,7 @@ credd_from_local <- function(){
   return(list('username'=username, 'password'=password))
 }
 
-#' check if the environment is local or in nuvolos
+# check if the environment is local or in nuvolos
 is_local <- function(){
   path_filename <- Sys.getenv("ACLIB_DBPATH_FILE", "/lifecycle/.dbpath")
   local = FALSE

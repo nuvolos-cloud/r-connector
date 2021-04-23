@@ -21,7 +21,7 @@ get_connection(
 \item{schemaname}{The schema (instance + state) to connect to}
 }
 \value{
-Return an ODBC connection object.
+Return an sqlalchemy connection object.
 }
 \description{
 Function get_connection(dbname, schemaname)
