@@ -48,6 +48,6 @@ Function dbWriteTable(dbname, name, con, database, schema, if_exists, index, ind
 Creates table in the connected nuvolos schema from R dataframe.
 }
 \examples{
-df <- nuvolos::dbWriteQuery(dbname = db, name = "table", con = con, if_exists = 'replace', index = FALSE)
+df <- dbWriteQuery(dbname = db, name = "table", con = con, if_exists = 'replace', index = FALSE)
 
 }

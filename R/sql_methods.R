@@ -23,7 +23,7 @@ tryCatch({
 #' @return Returns an R dataframe object.
 #'
 #' @examples
-#' df <- nuvolos::dbGetQuery('SELECT * FROM "table", con = con)
+#' df <- dbGetQuery('SELECT * FROM "table", con = con)
 #'
 #' @export
 dbGetQuery <- function(sql, con){
@@ -60,7 +60,7 @@ dbGetQuery <- function(sql, con){
 #' @return Returns the COPY INTO command's results to verify ingestion in the form of a tuple of whether all chunks were ingested correctly, # of chunks, # of ingested rows, and ingest's output.
 #'
 #' @examples
-#' df <- nuvolos::dbWriteQuery(dbname = db, name = "table", con = con, if_exists = 'replace', index = FALSE)
+#' df <- dbWriteQuery(dbname = db, name = "table", con = con, if_exists = 'replace', index = FALSE)
 #'
 #' @export
 dbWriteTable <- function(dbname,
