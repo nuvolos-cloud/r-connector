@@ -1,15 +1,22 @@
 source("R/get_connection.R")
 require(reticulate)
 
-if (is_local()){
-  py_install("nuvolos", pip =TRUE)
-} else {
-  py_install("nuvolos-odbc", pip =TRUE)
-}
+# importing python-based nuvolos connector, installing if not installed yet
+nuvolos <- tryCatch({
+  import("nuvolos")
+}, error = function(e) {
+  if (is_local()){
+    py_install("nuvolos", pip =TRUE)
+    return(import("nuvolos"))
+  } else {
+    py_install("nuvolos-odbc", pip =TRUE)
+    return(import("nuvolos"))
+  }
+})
 
-#imoporting python-based nuvolos connector package and pandas
-nuvolos <- import("nuvolos")
+# importing python package pandas
 pd <- import("pandas")
+
 
 #' @export
 dbGetQuery <- function(sql, con){

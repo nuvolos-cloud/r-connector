@@ -21,13 +21,24 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   require(keyring)
   require(reticulate)
   
+  # importing python-based nuvolos connector, installing if not installed yet
+  nuvolos <- tryCatch({
+    import("nuvolos")
+  }, error = function(e) {
+    if (is_local()){
+      py_install("nuvolos", pip =TRUE)
+      return(import("nuvolos"))
+    } else {
+      py_install("nuvolos-odbc", pip =TRUE)
+      return(import("nuvolos"))
+    }
+  })
+  
+
   if (is_local()){
-    py_install("nuvolos", pip =TRUE)
     conn_param = get_local_info(username, password, dbname, schemaname)
   } else {
-    py_install("nuvolos-odbc", pip =TRUE)
     conn_param = get_nuvolos_info(username, password, dbname, schemaname)
-    
   }
   
   username = conn_param[['username']]
@@ -35,9 +46,6 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   dbname = conn_param[['dbname']]
   schemaname = conn_param[['schemaname']]
   
-  # importing python-based nuvolos connector
-  nuvolos <- import("nuvolos")
-  pd <- import("pandas")
   
   # establishing connection with python-based nuvolos connector
   con <- nuvolos$get_connection(username = username,
