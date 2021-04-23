@@ -50,10 +50,10 @@ dbGetQuery <- function(sql, con){
 #' @param database The name of the database to which data will be inserted.
 #' @param schema The name of the schema to which data will be inserted.
 #' @param if_exists: How to behave if the table already exists. {‘fail’, ‘replace’, ‘append’}, default ‘fail’
-#' \describe{
-#' \item{fail:}{Raise a ValueError.}
-#' \item{replace:}{Drop the table before inserting new values.}
-#' \item{append:}{Insert new values to the existing table.}
+#' \itemize{
+#' \item fail: Raise a ValueError.
+#' \item replace: Drop the table before inserting new values.
+#' \item append: Insert new values to the existing table.
 #' }
 #' @param index bool, default True: Write DataFrame index as a column. Uses index_label as the column name in the table.
 #' @param index_label column label for index column(s). If None is given (default) and index is True, then the index names are used. A sequence should be given if the DataFrame uses MultiIndex.

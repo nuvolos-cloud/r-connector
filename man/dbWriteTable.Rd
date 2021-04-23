@@ -34,10 +34,10 @@ dbWriteTable(
 \item{nanoseconds}{if True, nanosecond timestamps will be used to upload the data. Limits timestamp range from 1677-09-21 00:12:43.145224192 to 2262-04-11 23:47:16.854775807.}
 
 \item{if_exists:}{How to behave if the table already exists. {‘fail’, ‘replace’, ‘append’}, default ‘fail’
-\describe{
-\item{fail:}{Raise a ValueError.}
-\item{replace:}{Drop the table before inserting new values.}
-\item{append:}{Insert new values to the existing table.}
+\itemize{
+\item fail: Raise a ValueError.
+\item replace: Drop the table before inserting new values.
+\item append: Insert new values to the existing table.
 }}
 }
 \value{
