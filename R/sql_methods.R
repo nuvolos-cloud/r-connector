@@ -27,7 +27,6 @@ tryCatch({
 #'
 #' @export
 dbGetQuery <- function(sql, con){
-  require(reticulate)
   
   # importing python nuvolos connector package
   nuvolos <- import('nuvolos')
@@ -73,8 +72,7 @@ dbWriteTable <- function(dbname,
                          index=TRUE,
                          index_label=NULL,
                          nanoseconds=FALSE){
-  require(reticulate)
-  
+
   # importing python nuvolos connector package
   nuvolos <- import('nuvolos')
   
@@ -99,7 +97,6 @@ dbWriteTable <- function(dbname,
 
 #' @export
 dbExecute <- function(sql, con){
-  require(reticulate)
 
   # importing python nuvolos connector package
   nuvolos <- import('nuvolos')
