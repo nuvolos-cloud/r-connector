@@ -34,9 +34,11 @@ dbWriteTable(
 \item{nanoseconds}{if True, nanosecond timestamps will be used to upload the data. Limits timestamp range from 1677-09-21 00:12:43.145224192 to 2262-04-11 23:47:16.854775807.}
 
 \item{if_exists:}{How to behave if the table already exists. {‘fail’, ‘replace’, ‘append’}, default ‘fail’
-* fail: Raise a ValueError.
-* replace: Drop the table before inserting new values.
-* append: Insert new values to the existing table.}
+\begin{itemize}
+\item fail: Raise a ValueError.
+\item replace: Drop the table before inserting new values.
+\item append: Insert new values to the existing table.
+\end{itemize}}
 }
 \value{
 Returns the COPY INTO command's results to verify ingestion in the form of a tuple of whether all chunks were ingested correctly, # of chunks, # of ingested rows, and ingest's output.
