@@ -45,3 +45,7 @@ Returns the COPY INTO command's results to verify ingestion in the form of a tup
 Function dbWriteTable(dbname, name, con, database, schema, if_exists, index, index_label, nanoseconds).
 Creates table in the connected nuvolos schema from R dataframe.
 }
+\examples{
+df <- nuvolos::dbWriteQuery(dbname = db, name = "table", con = con, if_exists = 'replace', index = FALSE)
+
+}

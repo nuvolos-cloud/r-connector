@@ -22,7 +22,7 @@ tryCatch({
 #' @param con pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.
 #' @return Returns an R dataframe object.
 #'
-#' @example
+#' @examples
 #' df <- nuvolos::dbGetQuery('SELECT * FROM "table", con = con)
 #'
 #' @export
@@ -58,7 +58,7 @@ dbGetQuery <- function(sql, con){
 #' @param nanoseconds if True, nanosecond timestamps will be used to upload the data. Limits timestamp range from 1677-09-21 00:12:43.145224192 to 2262-04-11 23:47:16.854775807.
 #' @return Returns the COPY INTO command's results to verify ingestion in the form of a tuple of whether all chunks were ingested correctly, # of chunks, # of ingested rows, and ingest's output.
 #'
-#' @example
+#' @examples
 #' df <- nuvolos::dbWriteQuery(dbname = db, name = "table", con = con, if_exists = 'replace', index = FALSE)
 #'
 #' @export
@@ -91,7 +91,7 @@ dbWriteTable <- function(dbname,
 #' @param con pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.
 #' @return Returns the result of python's execute method.
 #' 
-#' @examples  
+#' @examples
 #' dbExecute("DROP TABLE table", con)
 #' dbExecute("DROP TABLE \"Table\"", con)
 

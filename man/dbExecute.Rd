@@ -19,7 +19,6 @@ Function dbExecute(sql, con).
 Executes any SQL statement in the connected Nuvolos schema.
 }
 \examples{
- 
 dbExecute("DROP TABLE table", con)
 dbExecute("DROP TABLE \"Table\"", con)
 }
