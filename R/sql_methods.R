@@ -1,7 +1,7 @@
 source("R/get_connection.R")
 require(reticulate)
 
-# installing python-based nuvolos connector, if not installed yet
+# installing python-based Nuvolos connector, if not installed yet
 tryCatch({
   import("nuvolos")
 }, error = function(e) {
@@ -21,10 +21,10 @@ tryCatch({
 #' @param sql SQL statement to be executed. Make sure to use quotes around table names.
 #' @param con pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.
 #' @return Returns an R dataframe object.
-#'
+#' 
 #' @examples
-#' df <- dbGetQuery('SELECT * FROM "table", con = con)
-#'
+#' db <- dbGetQuery('SELECT * FROM "table", con = con)
+#' 
 #' @export
 dbGetQuery <- function(sql, con){
   
@@ -48,7 +48,7 @@ dbGetQuery <- function(sql, con){
 #' @param con pyodbc connection object when using on Nuvolos and an sqlalchemy connection object when using from a local device. The object can be created by get_connection function.
 #' @param database The name of the database to which data will be inserted.
 #' @param schema The name of the schema to which data will be inserted.
-#' @param if_exists: How to behave if the table already exists. {‘fail’, ‘replace’, ‘append’}, default ‘fail’
+#' @param if_exists How to behave if the table already exists. {‘fail’, ‘replace’, ‘append’}, default ‘fail’
 #' \itemize{
 #' \item fail: Raise a ValueError.
 #' \item replace: Drop the table before inserting new values.
@@ -60,7 +60,7 @@ dbGetQuery <- function(sql, con){
 #' @return Returns the COPY INTO command's results to verify ingestion in the form of a tuple of whether all chunks were ingested correctly, # of chunks, # of ingested rows, and ingest's output.
 #'
 #' @examples
-#' df <- dbWriteQuery(dbname = db, name = "table", con = con, if_exists = 'replace', index = FALSE)
+#' dbWriteQuery(dbname = db, name = "table", con = con, if_exists = 'replace', index = FALSE)
 #'
 #' @export
 dbWriteTable <- function(dbname,
