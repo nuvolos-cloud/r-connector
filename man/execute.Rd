@@ -14,7 +14,8 @@ Returns the result of python's execute method.
 }
 \description{
 Function execute(sql, dbname, schemaname).
-Executes any SQL statement in the connected Nuvolos schema. On Nuvolos the schema is by default the one the user is working in, from local machine they need to be specified.
+Executes any SQL statement in the connected Nuvolos schema.
+On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 }
 \examples{
 execute("DROP TABLE table")

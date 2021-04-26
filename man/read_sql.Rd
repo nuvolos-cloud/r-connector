@@ -14,7 +14,8 @@ Returns an R dataframe object.
 }
 \description{
 Function read_sql(sql, dbname, schemaname).
-Executes SELECT SQL statements in the connected Nuvolos schema. On Nuvolos the schema is by default the one the user is working in, from local machine they need to be specified.
+Executes SELECT SQL statements in the connected Nuvolos schema.
+On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 }
 \examples{
 db <- read_sql('SELECT * FROM "table")
