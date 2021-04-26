@@ -3,7 +3,8 @@ source("R/get_connection.R")
 #' Execute SQL SELECT statements from Nuvolos.cloud
 #'
 #' Function read_sql(sql, dbname, schemaname).
-#' Executes SELECT SQL statements in the connected Nuvolos schema. On Nuvolos the schema is by default the one the user is working in, from local machine they need to be specified.
+#' Executes SELECT SQL statements in the connected Nuvolos schema.
+#' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 #' 
 #' @param sql SQL statement to be executed. Make sure to use quotes around table names.
 #' @return Returns an R dataframe object.
@@ -54,8 +55,10 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
 
 #' Write tables to Nuvolos.cloud
 #'
-#' Function dbWriteTable(dbname, name, database, schema, if_exists, index, index_label, nanoseconds).
-#' Creates table in the connected nuvolos schema from R dataframe. On Nuvolos the schema is by default the one the user is working in, from local machine they need to be specified.
+#' Function to_sql(dbname, name, database, schema, if_exists, index, index_label, nanoseconds).
+#' Creates table in the connected nuvolos schema from R dataframe.
+#' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
+#' The function supports bulk loading.
 #' 
 #' @param df Name of the R dataframe to be written to a table.
 #' @param name The name of the database table. It will only be quoted and case sensitive if it contains keywords or special chars
@@ -122,7 +125,8 @@ to_sql <- function(df,
 #' Execute any SQL statement from Nuvolos.cloud
 #'
 #' Function execute(sql, dbname, schemaname).
-#' Executes any SQL statement in the connected Nuvolos schema. On Nuvolos the schema is by default the one the user is working in, from local machine they need to be specified.
+#' Executes any SQL statement in the connected Nuvolos schema.
+#' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 #' 
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
 #' @return Returns the result of python's execute method.
