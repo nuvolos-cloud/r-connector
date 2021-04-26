@@ -7,17 +7,18 @@ source("R/get_connection.R")
 #' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 #' 
 #' @param sql SQL statement to be executed. Make sure to use quotes around table names.
+#' @param dbname The name of the database from which the SELECT statement will be executed.
+#' @param schemaname The name of the schema from which the SELECT statement will be executed.
 #' @return Returns an R dataframe object.
 #' 
 #' @examples
-#' db <- read_sql('SELECT * FROM "table")
-#' db <- read_sql('SELECT * FROM "table", dbname = "space_1", schemaname = "test_schema")
+#' db <- read_sql('SELECT * FROM "table"')
+#' db <- read_sql('SELECT * FROM "table"', dbname = "space_1", schemaname = "test_schema")
 #' 
 #' @export
 read_sql <- function(sql, dbname = NULL, schemaname = NULL){
   require(reticulate)
-  require(keyring)
-  
+
   # importing necessary python packages, installing if not available
   nuvolos <- tryCatch({
     import("nuvolos")
@@ -55,8 +56,8 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
 
 #' Write tables to Nuvolos.cloud
 #'
-#' Function to_sql(dbname, name, database, schema, if_exists, index, index_label, nanoseconds).
-#' Creates table in the connected nuvolos schema from R dataframe.
+#' Function to_sql(df, name, dbname, schemaname, if_exists, index, index_label, nanoseconds).
+#' Creates table in the connected nuvolos schema from an R dataframe.
 #' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 #' The function supports bulk loading.
 #' 
@@ -90,8 +91,7 @@ to_sql <- function(df,
                    nanoseconds=FALSE){
 
   require(reticulate)
-  require(keyring)
-  
+
   # importing necessary python packages, installing if not available
   nuvolos <- tryCatch({
     import("nuvolos")
@@ -129,6 +129,8 @@ to_sql <- function(df,
 #' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 #' 
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
+#' @param dbname The name of the database from/in which the statement will be executed.
+#' @param schemaname The name of the schema from/in which the statement will be executed.
 #' @return Returns the result of python's execute method.
 #' 
 #' @examples
@@ -138,8 +140,7 @@ to_sql <- function(df,
 #' @export
 execute <- function(sql, dbname = NULL, schemaname = NULL){
   require(reticulate)
-  require(keyring)
-  
+
   # importing necessary python packages, installing if not available
   nuvolos <- tryCatch({
     import("nuvolos")

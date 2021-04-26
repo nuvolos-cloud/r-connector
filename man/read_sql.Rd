@@ -8,6 +8,10 @@ read_sql(sql, dbname = NULL, schemaname = NULL)
 }
 \arguments{
 \item{sql}{SQL statement to be executed. Make sure to use quotes around table names.}
+
+\item{dbname}{The name of the database from which the SELECT statement will be executed.}
+
+\item{schemaname}{The name of the schema from which the SELECT statement will be executed.}
 }
 \value{
 Returns an R dataframe object.
@@ -18,7 +22,7 @@ Executes SELECT SQL statements in the connected Nuvolos schema.
 On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 }
 \examples{
-db <- read_sql('SELECT * FROM "table")
-db <- read_sql('SELECT * FROM "table", dbname = "space_1", schemaname = "test_schema")
+db <- read_sql('SELECT * FROM "table"')
+db <- read_sql('SELECT * FROM "table"', dbname = "space_1", schemaname = "test_schema")
 
 }

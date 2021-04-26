@@ -41,8 +41,8 @@ to_sql(
 Returns the COPY INTO command's results to verify ingestion in the form of a tuple of whether all chunks were ingested correctly, # of chunks, # of ingested rows, and ingest's output.
 }
 \description{
-Function to_sql(dbname, name, database, schema, if_exists, index, index_label, nanoseconds).
-Creates table in the connected nuvolos schema from R dataframe.
+Function to_sql(df, name, dbname, schemaname, if_exists, index, index_label, nanoseconds).
+Creates table in the connected nuvolos schema from an R dataframe.
 On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 The function supports bulk loading.
 }

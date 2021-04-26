@@ -8,6 +8,10 @@ execute(sql, dbname = NULL, schemaname = NULL)
 }
 \arguments{
 \item{sql}{SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).}
+
+\item{dbname}{The name of the database from/in which the statement will be executed.}
+
+\item{schemaname}{The name of the schema from/in which the statement will be executed.}
 }
 \value{
 Returns the result of python's execute method.
