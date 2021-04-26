@@ -132,7 +132,7 @@ to_sql <- function(df,
 #' execute("DROP TABLE \"Table\"", dbname = "space_1", schemaname = "test_schema")
 
 #' @export
-execute <- funcion(sql, dbname = NULL, schemaname = NULL){
+execute <- function(sql, dbname = NULL, schemaname = NULL){
   require(reticulate)
   require(keyring)
   
