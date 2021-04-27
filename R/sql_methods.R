@@ -4,7 +4,7 @@
 #' Executes SELECT SQL statements in the connected Nuvolos schema.
 #' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 #' 
-#' @param sql SQL statement to be executed. Make sure to use quotes around table names.
+#' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
 #' @param dbname The name of the database from which the SELECT statement will be executed.
 #' @param schemaname The name of the schema from which the SELECT statement will be executed.
 #' @return Returns an R dataframe object.

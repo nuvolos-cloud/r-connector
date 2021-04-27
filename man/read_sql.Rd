@@ -7,7 +7,7 @@
 read_sql(sql, dbname = NULL, schemaname = NULL)
 }
 \arguments{
-\item{sql}{SQL statement to be executed. Make sure to use quotes around table names.}
+\item{sql}{SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).}
 
 \item{dbname}{The name of the database from which the SELECT statement will be executed.}
 
