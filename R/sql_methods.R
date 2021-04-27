@@ -10,8 +10,8 @@
 #' @return Returns an R dataframe object.
 #' 
 #' @examples
-#' db <- read_sql('SELECT * FROM "table"')
-#' db <- read_sql('SELECT * FROM "table"', dbname = "space_1", schemaname = "test_schema")
+#' db <- read_sql("SELECT * FROM \"Table\"")
+#' db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema")
 #' 
 #' @export
 read_sql <- function(sql, dbname = NULL, schemaname = NULL){
