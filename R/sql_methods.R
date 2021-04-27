@@ -27,11 +27,7 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
  password <- NULL
  
  # reading credentials for establishing connection
- if (is_local()){
-   conn_param <- get_local_info(username, password, dbname, schemaname)
- } else {
-   conn_param <- get_nuvolos_info(username, password, dbname, schemaname)
- }
+ conn_param <- get_credentials(username, password, dbname, schemaname)
  
  username <- conn_param[['username']]
  password <- conn_param[['password']]
@@ -94,11 +90,12 @@ to_sql <- function(df,
   password <- NULL
 
   # reading credentials for establishing connection
-  if (is_local()){
-    conn_param = get_local_info(username, password, dbname, schemaname)
-  } else {
-    conn_param = get_nuvolos_info(username, password, dbname, schemaname)
-  }
+  conn_param <- get_credentials(username, password, dbname, schemaname)
+  
+  username <- conn_param[['username']]
+  password <- conn_param[['password']]
+  dbname  <- conn_param[['dbname']]
+  schemaname <- conn_param[['schemaname']
   
   # establishing connection with python-based nuvolos connector
   con <- nuvolos$get_connection(username = username,
@@ -138,11 +135,12 @@ execute <- function(sql, dbname = NULL, schemaname = NULL){
   password <- NULL
   
   # reading credentials for establishing connection
-  if (is_local()){
-    conn_param = get_local_info(username, password, dbname, schemaname)
-  } else {
-    conn_param = get_nuvolos_info(username, password, dbname, schemaname)
-  }
+  conn_param <- get_credentials(username, password, dbname, schemaname)
+  
+  username <- conn_param[['username']]
+  password <- conn_param[['password']]
+  dbname  <- conn_param[['dbname']]
+  schemaname <- conn_param[['schemaname']
   
   # establishing connection with python-based nuvolos connector
   con <- nuvolos$get_connection(username = username,
@@ -166,4 +164,13 @@ import_nuvolos <- function(){
   })
   
   return(nuvolos)
+}
+
+get_credentials <- function(username, password, dbname, schemaname){
+  # checking whether user is on Nuvolos, asking for credentials if not
+  if (is_local()){
+    return(get_local_info(username, password, dbname, schemaname))
+  } else {
+    return(get_nuvolos_info(username, password, dbname, schemaname))
+  }
 }
