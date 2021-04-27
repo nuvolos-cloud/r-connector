@@ -15,11 +15,11 @@
 #' 
 #' @export
 read_sql <- function(sql, dbname = NULL, schemaname = NULL){
-  require(reticulate)
+
 
  # importing necessary python packages
  nuvolos <- import_nuvolos() 
- pd <- import("pandas")
+ pd <- reticulate::import("pandas")
 
  username <- NULL
  password <- NULL
@@ -79,7 +79,6 @@ to_sql <- function(df,
                    index_label=NULL,
                    nanoseconds=FALSE){
 
-  require(reticulate)
 
   # importing necessary python package
   nuvolos <- import_nuvolos()
@@ -124,7 +123,6 @@ to_sql <- function(df,
 
 #' @export
 execute <- function(sql, dbname = NULL, schemaname = NULL){
-  require(reticulate)
 
   # importing necessary python package
   nuvolos <- import_nuvolos()
@@ -155,10 +153,10 @@ import_nuvolos <- function(){
   
   # importing nuvolos python connector, installing if not available
   nuvolos <- tryCatch({
-    import("nuvolos")
+    reticulate::import("nuvolos")
   }, error = function(e){
-    py_install("nuvolos", pip = TRUE)
-    return(import("nuvolos"))
+    reticulate::py_install("nuvolos", pip = TRUE)
+    return(reticulate::import("nuvolos"))
   })
   
   return(nuvolos)
