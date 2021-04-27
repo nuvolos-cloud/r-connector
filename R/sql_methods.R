@@ -18,7 +18,7 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
   require(reticulate)
 
  # importing necessary python packages
- nuvolos <-import_nuvolos() 
+ nuvolos <- import_nuvolos() 
  pd <- import("pandas")
 
  username <- NULL
@@ -82,7 +82,7 @@ to_sql <- function(df,
   require(reticulate)
 
   # importing necessary python package
-  nuvolos <-import_nuvolos()
+  nuvolos <- import_nuvolos()
   
   username <- NULL
   password <- NULL
@@ -127,7 +127,7 @@ execute <- function(sql, dbname = NULL, schemaname = NULL){
   require(reticulate)
 
   # importing necessary python package
-  nuvolos <-import_nuvolos()
+  nuvolos <- import_nuvolos()
   
   username <- NULL
   password <- NULL
