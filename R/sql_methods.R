@@ -95,7 +95,7 @@ to_sql <- function(df,
   username <- conn_param[['username']]
   password <- conn_param[['password']]
   dbname  <- conn_param[['dbname']]
-  schemaname <- conn_param[['schemaname']
+  schemaname <- conn_param[['schemaname']]
   
   # establishing connection with python-based nuvolos connector
   con <- nuvolos$get_connection(username = username,
@@ -140,7 +140,7 @@ execute <- function(sql, dbname = NULL, schemaname = NULL){
   username <- conn_param[['username']]
   password <- conn_param[['password']]
   dbname  <- conn_param[['dbname']]
-  schemaname <- conn_param[['schemaname']
+  schemaname <- conn_param[['schemaname']]
   
   # establishing connection with python-based nuvolos connector
   con <- nuvolos$get_connection(username = username,
