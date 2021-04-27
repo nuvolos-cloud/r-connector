@@ -19,29 +19,24 @@ source("R/get_connection.R")
 read_sql <- function(sql, dbname = NULL, schemaname = NULL){
   require(reticulate)
 
-  # importing necessary python packages, installing if not available
-  nuvolos <- tryCatch({
-    import("nuvolos")
-  }, error = function(e){
-    py_install("nuvolos", pip = TRUE)
-    return(import("nuvolos"))
-  })
- pd<-import("pandas")
+ # importing necessary python packages
+ nuvolos <-import_nuvolos() 
+ pd <- import("pandas")
 
  username <- NULL
  password <- NULL
  
  # reading credentials for establishing connection
  if (is_local()){
-   conn_param = get_local_info(username, password, dbname, schemaname)
+   conn_param <- get_local_info(username, password, dbname, schemaname)
  } else {
-   conn_param = get_nuvolos_info(username, password, dbname, schemaname)
+   conn_param <- get_nuvolos_info(username, password, dbname, schemaname)
  }
  
- username = conn_param[['username']]
- password = conn_param[['password']]
- dbname = conn_param[['dbname']]
- schemaname = conn_param[['schemaname']]
+ username <- conn_param[['username']]
+ password <- conn_param[['password']]
+ dbname  <- conn_param[['dbname']]
+ schemaname <- conn_param[['schemaname']]
  
  # establishing connection with python-based nuvolos connector
  con <- nuvolos$get_connection(username = username,
@@ -92,13 +87,8 @@ to_sql <- function(df,
 
   require(reticulate)
 
-  # importing necessary python packages, installing if not available
-  nuvolos <- tryCatch({
-    import("nuvolos")
-  }, error = function(e){
-    py_install("nuvolos", pip = TRUE)
-    return(import("nuvolos"))
-  })
+  # importing necessary python package
+  nuvolos <-import_nuvolos()
   
   username <- NULL
   password <- NULL
@@ -141,13 +131,8 @@ to_sql <- function(df,
 execute <- function(sql, dbname = NULL, schemaname = NULL){
   require(reticulate)
 
-  # importing necessary python packages, installing if not available
-  nuvolos <- tryCatch({
-    import("nuvolos")
-  }, error = function(e){
-    py_install("nuvolos", pip = TRUE)
-    return(import("nuvolos"))
-  })
+  # importing necessary python package
+  nuvolos <-import_nuvolos()
   
   username <- NULL
   password <- NULL
@@ -167,4 +152,18 @@ execute <- function(sql, dbname = NULL, schemaname = NULL){
   
   # using python's execute method on the established connection
   return(con$execute(sql))
+}
+
+
+import_nuvolos <- function(){
+  
+  # importing nuvolos python connector, installing if not available
+  nuvolos <- tryCatch({
+    import("nuvolos")
+  }, error = function(e){
+    py_install("nuvolos", pip = TRUE)
+    return(import("nuvolos"))
+  })
+  
+  return(nuvolos)
 }

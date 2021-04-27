@@ -143,7 +143,7 @@ get_local_info <- function(username = NULL, password = NULL, dbname = NULL, sche
       credd_from_local()
     }, error = function(e) {
       input_nuvolos_credential()
-      cred = credd_from_local()
+      cred <- credd_from_local()
       return(cred)
     })
     username = cred[['username']]
