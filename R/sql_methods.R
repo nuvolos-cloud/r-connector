@@ -1,5 +1,3 @@
-source("R/get_connection.R")
-
 #' Execute SQL SELECT statements from Nuvolos.cloud
 #'
 #' Function read_sql(sql, dbname, schemaname).
