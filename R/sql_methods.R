@@ -118,7 +118,7 @@ to_sql <- function(df,
                    if_exists = if_exists, index = index, index_label = index_label, nanoseconds = nanoseconds)
   }, finally= {
     con$close()
-    engine$disose()
+    engine$dispose()
   })
 
 }
