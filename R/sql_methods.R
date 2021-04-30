@@ -32,17 +32,20 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
  dbname  <- conn_param[['dbname']]
  schemaname <- conn_param[['schemaname']]
  
- # establishing connection with python-based nuvolos connector
- con <- nuvolos$get_connection(username = username,
+ # creating engine and establishing connection with python-based nuvolos connector
+ engine <- nuvolos$get_engine(username = username,
                                password = password,
                                dbname = dbname,
                                schemaname = schemaname)
+ con <- engine$connect()
  
- # using python's pandas.read_sql() method execute select query. After execution the connection is closed.
+ # using python's pandas.read_sql() method execute select query. 
+ # After execution the connection is closed and the engine is disosed.
  tryCatch({
    result <- pd$read_sql(sql, con)
  }, finally = {
    con$close()
+   engine$dispose()
  }
  )
  
@@ -101,18 +104,21 @@ to_sql <- function(df,
   dbname  <- conn_param[['dbname']]
   schemaname <- conn_param[['schemaname']]
   
-  # establishing connection with python-based nuvolos connector
-  con <- nuvolos$get_connection(username = username,
-                                password = password,
-                                dbname = dbname,
-                                schemaname = schemaname)
+  # creating engine and establishing connection with python-based nuvolos connector
+  engine <- nuvolos$get_engine(username = username,
+                               password = password,
+                               dbname = dbname,
+                               schemaname = schemaname)
+  con <- engine$connect()
   
-  # using nuvolos.to_sql function to create table in the selected database and schema. After execution connection is closed.
+  # using nuvolos.to_sql function to create table in the selected database and schema.
+  # After execution the connection is closed and the engine is disosed.
   trycatch({
     nuvolos$to_sql(df=df, name=name, con=con, database=dbname, schema=schemaname,
                    if_exists = if_exists, index = index, index_label = index_label, nanoseconds = nanoseconds)
   }, finally= {
     con$close()
+    engine$disose()
   })
 
 }
@@ -150,17 +156,20 @@ execute <- function(sql, dbname = NULL, schemaname = NULL){
   dbname  <- conn_param[['dbname']]
   schemaname <- conn_param[['schemaname']]
   
-  # establishing connection with python-based nuvolos connector
-  con <- nuvolos$get_connection(username = username,
-                                password = password,
-                                dbname = dbname,
-                                schemaname = schemaname)
+  # creating engine and establishing connection with python-based nuvolos connector
+  engine <- nuvolos$get_engine(username = username,
+                               password = password,
+                               dbname = dbname,
+                               schemaname = schemaname)
+  con <- engine$connect()
   
-  # using python's execute method on the established connection
+  # using python's execute method on the established connection.
+  # After execution the connection is closed and the engine is disosed.
   tryCatch({
     con$execute(sql)
   }, finally = {
     con$close()
+    engine$dispose()
   })
 
 }
