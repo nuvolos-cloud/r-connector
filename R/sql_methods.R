@@ -38,8 +38,15 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
                                dbname = dbname,
                                schemaname = schemaname)
  
- # using python's pandas.read_sql() method  to return the result of the query
- return(pd$read_sql(sql, con))
+ # using python's pandas.read_sql() method execute select query. After execution the connection is closed.
+ tryCatch({
+   result <- pd$read_sql(sql, con)
+ }, finally = {
+   con$close()
+ }
+ )
+ 
+ return(result)
 }
 
 
@@ -100,9 +107,14 @@ to_sql <- function(df,
                                 dbname = dbname,
                                 schemaname = schemaname)
   
-  # using nuvolos.to_sql function to create table in the selected database and schema
-  return(nuvolos$to_sql(df=df, name=name, con=con, database=dbname, schema=schemaname,
-        if_exists = if_exists, index = index, index_label = index_label, nanoseconds = nanoseconds))
+  # using nuvolos.to_sql function to create table in the selected database and schema. After execution connection is closed.
+  trycatch({
+    nuvolos$to_sql(df=df, name=name, con=con, database=dbname, schema=schemaname,
+                   if_exists = if_exists, index = index, index_label = index_label, nanoseconds = nanoseconds)
+  }, finally= {
+    con$close()
+  })
+
 }
 
 
@@ -145,7 +157,12 @@ execute <- function(sql, dbname = NULL, schemaname = NULL){
                                 schemaname = schemaname)
   
   # using python's execute method on the established connection
-  return(con$execute(sql))
+  tryCatch({
+    con$execute(sql)
+  }, finally = {
+    con$close()
+  })
+
 }
 
 
