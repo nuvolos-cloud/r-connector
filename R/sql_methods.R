@@ -113,7 +113,7 @@ to_sql <- function(df,
   
   # using nuvolos.to_sql function to create table in the selected database and schema.
   # After execution the connection is closed and the engine is disosed.
-  trycatch({
+  tryCatch({
     nuvolos$to_sql(df=df, name=name, con=con, database=dbname, schema=schemaname,
                    if_exists = if_exists, index = index, index_label = index_label, nanoseconds = nanoseconds)
   }, finally= {
