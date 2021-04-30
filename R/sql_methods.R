@@ -105,22 +105,25 @@ to_sql <- function(df,
   schemaname <- conn_param[['schemaname']]
   
   # creating engine and establishing connection with python-based nuvolos connector
-  engine <- nuvolos$get_engine(username = username,
-                               password = password,
-                               dbname = dbname,
-                               schemaname = schemaname)
-  con <- engine$connect()
+  reticulate::py_run_string(paste("from nuvolos import get_engine; engine = get_engine(dbname = ","'", dbname,"'", ", schemaname = ", "'", schemaname, "'", ", username = ", "'", username, "'", ", password = ", "'", password, "'", ")", sep = ""))
+  reticulate::py_run_string("con = engine.connect()")
   
   # using nuvolos.to_sql function to create table in the selected database and schema.
-  # After execution the connection is closed and the engine is disosed.
-  tryCatch({
-    nuvolos$to_sql(df=df, name=name, con=con, database=dbname, schema=schemaname,
-                   if_exists = if_exists, index = index, index_label = index_label, nanoseconds = nanoseconds)
-  }, finally= {
-    con$close()
-    engine$dispose()
-  })
+  # After execution the connection is closed and the engine is disposed.
 
+  # writing file to temporary directory in feather format, which is used as an intermediary
+  #between r and python, in order to handle null and NA values. The temporary file is deleted 
+  #when the function exits. 
+  tf <- tempfile()
+  on.exit(unlink(tf))
+  feather::write_feather(df, tf)
+  
+  tryCatch({
+    reticulate::py_run_string(paste("import pandas as pd;from nuvolos import to_sql;df = pd.read_feather('", tf, "');to_sql(df, ", "'", name, "'", ", database = ","'", dbname,"'", ", schema = ", "'", schemaname, "'", ", if_exists = 'replace', index = False, con = con)",  sep = ""))
+  }, finally = {
+    reticulate::py_run_string("con.close()")
+    reticulate::py_run_string("engine.dispose()")
+  })
 }
 
 
