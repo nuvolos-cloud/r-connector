@@ -43,7 +43,7 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
  # using python's pandas.read_sql() method execute select query. 
  # After execution the connection is closed and the engine is disposed.
  tryCatch({
-   result <- pd$read_sql(sql, con, parse_dates)
+   result <- pd$read_sql(sql, con, parse_dates = parse_dates)
  }, finally = {
    con$close()
    engine$dispose()
