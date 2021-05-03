@@ -14,7 +14,7 @@
 #' db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema")
 #' 
 #' @export
-read_sql <- function(sql, dbname = NULL, schemaname = NULL){
+read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
 
 
  # importing necessary python packages
@@ -42,12 +42,19 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
  # using python's pandas.read_sql() method execute select query. 
  # After execution the connection is closed and the engine is disosed.
  tryCatch({
-   result <- pd$read_sql(sql, con)
+   result <- pd$read_sql(sql, con, parse_dates)
  }, finally = {
    con$close()
    engine$dispose()
  }
  )
+ 
+ # Unlisting list column types. Also substituting NULL values to NA to remain consistent.
+ for (i in seq(1,ncol(result))){
+   if (class(result[,i]) == "list"){
+     result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
+   }
+ }
  
  return(result)
 }
