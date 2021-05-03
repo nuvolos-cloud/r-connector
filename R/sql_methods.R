@@ -1,17 +1,18 @@
 #' Execute SQL SELECT statements from Nuvolos.cloud
 #'
-#' Function read_sql(sql, dbname, schemaname).
+#' Function read_sql(sql, dbname, schemaname, parse_dates).
 #' Executes SELECT SQL statements in the connected Nuvolos schema.
 #' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 #' 
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
 #' @param dbname The name of the database from which the SELECT statement will be executed.
 #' @param schemaname The name of the schema from which the SELECT statement will be executed.
+#' @param parse_dates In case the table contains date columns, they can be given here to read them as date in R. In case the date is stored as character in the table, it will be read as character when not specifying parse_dates. In case the dates are stored as date format, parse_dates must be specified.
 #' @return Returns an R dataframe object.
 #' 
 #' @examples
-#' db <- read_sql("SELECT * FROM \"Table\"")
-#' db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema")
+#' db <- read_sql("SELECT * FROM table")
+#' db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema", parse_dates = c("date1", "date2"))
 #' 
 #' @export
 read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
@@ -80,7 +81,6 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
 #' @param index bool, default True: Write DataFrame index as a column. Uses index_label as the column name in the table.
 #' @param index_label column label for index column(s). If None is given (default) and index is True, then the index names are used. A sequence should be given if the DataFrame uses MultiIndex.
 #' @param nanoseconds if True, nanosecond timestamps will be used to upload the data. Limits timestamp range from 1677-09-21 00:12:43.145224192 to 2262-04-11 23:47:16.854775807.
-#' @return Returns the COPY INTO command's results to verify ingestion in the form of a tuple of whether all chunks were ingested correctly, # of chunks, # of ingested rows, and ingest's output.
 #'
 #' @examples
 #' to_sql(df = df, name = "table", if_exists = 'replace', index = FALSE)
@@ -147,7 +147,7 @@ to_sql <- function(df,
 #' 
 #' @examples
 #' execute("DROP TABLE table")
-#' execute("DROP TABLE \"Table\"", dbname = "space_1", schemaname = "test_schema")
+#' execute("DROP TABLE table", dbname = "space_1", schemaname = "test_schema")
 
 #' @export
 execute <- function(sql, dbname = NULL, schemaname = NULL){

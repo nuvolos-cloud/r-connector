@@ -4,7 +4,7 @@
 \alias{read_sql}
 \title{Execute SQL SELECT statements from Nuvolos.cloud}
 \usage{
-read_sql(sql, dbname = NULL, schemaname = NULL)
+read_sql(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL)
 }
 \arguments{
 \item{sql}{SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).}
@@ -12,17 +12,19 @@ read_sql(sql, dbname = NULL, schemaname = NULL)
 \item{dbname}{The name of the database from which the SELECT statement will be executed.}
 
 \item{schemaname}{The name of the schema from which the SELECT statement will be executed.}
+
+\item{parse_dates}{In case the table contains date columns, they can be given here to read them as date in R. In case the date is stored as character in the table, it will be read as character when not specifying parse_dates. In case the dates are stored as date format, parse_dates must be specified.}
 }
 \value{
 Returns an R dataframe object.
 }
 \description{
-Function read_sql(sql, dbname, schemaname).
+Function read_sql(sql, dbname, schemaname, parse_dates).
 Executes SELECT SQL statements in the connected Nuvolos schema.
 On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 }
 \examples{
-db <- read_sql("SELECT * FROM \"Table\"")
-db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema")
+db <- read_sql("SELECT * FROM table")
+db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema", parse_dates = c("date1", "date2"))
 
 }

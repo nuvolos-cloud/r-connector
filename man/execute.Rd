@@ -23,5 +23,5 @@ On Nuvolos the database and schema are by default the ones the user is working i
 }
 \examples{
 execute("DROP TABLE table")
-execute("DROP TABLE \"Table\"", dbname = "space_1", schemaname = "test_schema")
+execute("DROP TABLE table", dbname = "space_1", schemaname = "test_schema")
 }

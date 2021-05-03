@@ -37,9 +37,6 @@ to_sql(
 
 \item{nanoseconds}{if True, nanosecond timestamps will be used to upload the data. Limits timestamp range from 1677-09-21 00:12:43.145224192 to 2262-04-11 23:47:16.854775807.}
 }
-\value{
-Returns the COPY INTO command's results to verify ingestion in the form of a tuple of whether all chunks were ingested correctly, # of chunks, # of ingested rows, and ingest's output.
-}
 \description{
 Function to_sql(df, name, dbname, schemaname, if_exists, index, index_label, nanoseconds).
 Creates table in the connected nuvolos schema from an R dataframe.
