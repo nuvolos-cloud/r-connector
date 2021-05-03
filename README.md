@@ -23,20 +23,20 @@ Standard usage from local machine is as follows.
 
 Reading tables:
 ```
-db <- read_sql("SELECT * FROM table, dbname = "organization_name/space_name", 
+db <- nuvolos::read_sql("SELECT * FROM table, dbname = "organization_name/space_name", 
 schemaname = "instance_name/snapshot_name")
 ```
 
 Writing tables:
 ```
-to_sql(df = df, name = "table", dbname = "organization_name/space_name, 
+nuvolos::to_sql(df = df, name = "table", dbname = "organization_name/space_name, 
 schemaname = "instance_name/snapshot_name", if_exists = "replace", index = FALSE)
 ```
 
 Executing general statements:
 
 ```
-execute("DROP TABLE table", "organization_name/space_name", 
+nuvolos::execute("DROP TABLE table", "organization_name/space_name", 
 schemaname = "instance_name/snapshot_name")
 ```
 
@@ -44,5 +44,6 @@ schemaname = "instance_name/snapshot_name")
 
 In order to avoid quoting the tables, you should use only lowercase letters in table names to make them case insensitive. In case there are uppercase letters or special characters in the tables names, you have to refer them as follows: \\"Table\\".
 
+For any further questions please consult the functions' description, which can be called by ?nuvolos::execute for example.
 
 
