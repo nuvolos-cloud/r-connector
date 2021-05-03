@@ -44,6 +44,8 @@ schemaname = "instance_name/snapshot_name")
 
 In order to avoid quoting the tables, you should use only lowercase letters in table names to make them case insensitive. In case there are uppercase letters or special characters in the tables names, you have to refer them as follows: \\"Table\\".
 
+# Further question on usage
+
 For any further questions please consult the functions' description, which can be called by ?nuvolos::execute for example.
 
 
