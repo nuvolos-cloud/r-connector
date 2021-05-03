@@ -41,7 +41,7 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
  con <- engine$connect()
  
  # using python's pandas.read_sql() method execute select query. 
- # After execution the connection is closed and the engine is disosed.
+ # After execution the connection is closed and the engine is disposed.
  tryCatch({
    result <- pd$read_sql(sql, con, parse_dates)
  }, finally = {
@@ -51,12 +51,7 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
  )
  
  # Unlisting list column types. Also substituting NULL values to NA to remain consistent.
- for (i in seq(1,ncol(result))){
-   if (class(result[,i]) == "list"){
-     result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
-   }
- }
- 
+
  return(result)
 }
 
