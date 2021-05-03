@@ -14,7 +14,7 @@ read_sql(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL)
 \item{schemaname}{The name of the schema from which the SELECT statement will be executed.}
 
 \item{parse_dates}{In case the table contains date columns, they can be given here to read them as date in R. In case the date is stored as character in the table, it will be read as character when not specifying parse_dates. 
-In case the dates are stored as date format, parse_dates must be specified. Note, that the dates are returned with time as well. In case there were no time specified in the original table,
+In case the dates are stored as date format, parse_dates must be specified. Note, that the dates are returned with time as well in posixct format. In case there were no time specified in the original table,
 the R uses the default value. To get rid of the time, you can use db$Date <- as.Date(db$Date, "%Y-%m-%d") expression for example.}
 }
 \value{
