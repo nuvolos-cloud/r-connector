@@ -24,20 +24,20 @@ Standard usage from local machine is as follows.
 Reading tables:
 ```
 db <- read_sql("SELECT * FROM table, dbname = "organization_name/space_name", 
-schemaname = "instance_name/snapshot_name)
+schemaname = "instance_name/snapshot_name")
 ```
 
 Writing tables:
 ```
 to_sql(df = df, name = "table", dbname = "organization_name/space_name, 
-schemaname = "instance_name/snapshot_name, if_exists = 'replace', index = FALSE)
+schemaname = "instance_name/snapshot_name", if_exists = "replace", index = FALSE)
 ```
 
 Executing general statements:
 
 ```
 execute("DROP TABLE table", "organization_name/space_name", 
-schemaname = "instance_name/snapshot_name"")
+schemaname = "instance_name/snapshot_name")
 ```
 
 # Naming tables
