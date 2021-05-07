@@ -124,7 +124,7 @@ to_sql <- function(df,
   #when the function exits. 
   tf <- tempfile()
   on.exit(unlink(tf))
-  feather::write_feather(df, tf)
+  arrow::write_feather(df, tf)
   
   tryCatch({
     reticulate::py_run_string(paste("import pandas as pd;from nuvolos import to_sql;df = pd.read_feather('", tf, "');to_sql(df, ", "'", name, "'", ", database = ","'", dbname,"'", ", schema = ", "'", schemaname, "'", ", if_exists = 'replace', index = False, con = con)",  sep = ""))
