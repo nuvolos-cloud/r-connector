@@ -204,6 +204,9 @@ get_credentials <- function(username, password, dbname, schemaname){
   if (is_local()){
     return(get_local_info(username, password, dbname, schemaname))
   } else {
-    return(get_nuvolos_info(username, password, dbname, schemaname))
+    cred <- get_nuvolos_info(username, password, dbname, schemaname)
+    # getting rid of the extra quotation marks around the dbname and schemaname
+    return(lapply(cred, function(x) if (length(unlist(strsplit(x,'"')))>1) {unlist(strsplit(x,'"'))[2]} else {x})
+)
   }
 }
