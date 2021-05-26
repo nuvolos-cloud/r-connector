@@ -1,6 +1,7 @@
 # Installation
 
 ```
+options(repos = "https://cran.rstudio.com"")
 install.packages("remotes")
 remotes::install_github("nuvolos-cloud/r-connector")
 ```
