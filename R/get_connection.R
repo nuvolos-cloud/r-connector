@@ -139,11 +139,12 @@ is_local <- function(){
 get_local_info <- function(username = NULL, password = NULL, dbname = NULL, schemaname = NULL){
   # Find credentials from local, if not, create one by keyring
   if (is.null(username) && is.null(password)) {
-    tryCatch({
-      cred = credd_from_local()
+    cred <- tryCatch({
+      credd_from_local()
     }, error = function(e) {
       input_nuvolos_credential()
-      cred = credd_from_local()
+      cred <- credd_from_local()
+      return(cred)
     })
     username = cred[['username']]
     password = cred[['password']]
