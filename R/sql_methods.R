@@ -206,7 +206,7 @@ get_credentials <- function(username, password, dbname, schemaname){
   } else {
     cred <- get_nuvolos_info(username, password, dbname, schemaname)
     # getting rid of the extra quotation marks around the dbname and schemaname
-    return(lapply(cred, function(x) if (length(unlist(strsplit(x,'"')))>1) {unlist(strsplit(x,'"'))[2]} else {x})
-)
+    cred[3:4] <-lapply(cred[3:4], function(x) if (length(unlist(strsplit(x,'"')))>1) {unlist(strsplit(x,'"'))[2]} else {x})
+    return(cred)
   }
 }
