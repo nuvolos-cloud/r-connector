@@ -1,7 +1,7 @@
 # Installation
 
 ```
-options(repos = "https://cran.rstudio.com"")
+options(repos = "https://cran.rstudio.com")
 install.packages("remotes")
 remotes::install_github("nuvolos-cloud/r-connector")
 ```
@@ -30,7 +30,7 @@ schemaname = "instance_name/snapshot_name")
 
 Writing tables:
 ```
-nuvolos::to_sql(df = df, name = "table", dbname = "organization_name/space_name, 
+nuvolos::to_sql(df = df, name = "table", dbname = "organization_name/space_name", 
 schemaname = "instance_name/snapshot_name", if_exists = "replace", index = FALSE)
 ```
 
