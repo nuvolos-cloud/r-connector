@@ -7,9 +7,9 @@
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
 #' @param dbname The name of the database from which the SELECT statement will be executed.
 #' @param schemaname The name of the schema from which the SELECT statement will be executed.
-#' @param parse_dates In case the table contains date columns, they can be given here to read them as date in R. In case the date is stored as character in the table, it will be read as character when not specifying parse_dates. 
-#' In case the dates are stored as date format, parse_dates must be specified. Note, that the dates are returned with time as well in posixct format. In case there were no time specified in the original table,
-#' the R uses the default value. To get rid of the time, you can use db$Date <- as.Date(db$Date, "\%Y-\%m-\%d") expression for example.
+#' @param parse_dates In case the table contains date columns, they can be given here to read them as date in R. In case the date is stored as character in the table, it will be read as character when not specifying parse_dates.
+#' In case parse_dates is not specified, but the data is stored in date format in the table, the function returns the dates as string. In case parse_dates is specified, the dates are returned with time as well in POSIXct format. 
+#' In case there were no time specified in the original table, the R uses the default value. To get rid of the time, you can use db$Date <- as.Date(db$Date, "\%Y-\%m-\%d") expression for example.
 #' @return Returns an R dataframe object.
 #' 
 #' @examples
@@ -23,6 +23,7 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
  # importing necessary python packages
  nuvolos <- import_nuvolos() 
  pd <- reticulate::import("pandas")
+ datetime <- reticulate::import("datetime")
 
  username <- NULL
  password <- NULL
@@ -54,7 +55,14 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
  # Unlisting list column types. Also substituting NULL values to NA to remain consistent.
  for (i in seq(1,ncol(result))){
    if (typeof(result[,i]) == "list"){
+     if (class(result[,i][[1]])[1] == "datetime.date"){
+       
+       # returning date format as string if parse_dates is not specified.
+       result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x$isoformat()}}))
+     }
+     else {
      result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
+     }
    }
  }
  
