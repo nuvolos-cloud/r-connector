@@ -14,7 +14,7 @@ read_sql(sql, dbname = NULL, schemaname = NULL)
 \item{schemaname}{The name of the schema from which the SELECT statement will be executed.}
 }
 \value{
-Returns an R dataframe object.
+Returns an R dataframe object. When date format columns are in the table, they are returned as POSIXct.
 }
 \description{
 Function read_sql(sql, dbname, schemaname, parse_dates).

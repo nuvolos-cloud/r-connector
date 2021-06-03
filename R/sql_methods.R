@@ -7,7 +7,7 @@
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
 #' @param dbname The name of the database from which the SELECT statement will be executed.
 #' @param schemaname The name of the schema from which the SELECT statement will be executed.
-#' @return Returns an R dataframe object.
+#' @return Returns an R dataframe object. When date format columns are in the table, they are returned as POSIXct. 
 #' 
 #' @examples
 #' db <- read_sql("SELECT * FROM table")
