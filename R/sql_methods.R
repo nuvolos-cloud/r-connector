@@ -23,7 +23,6 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
  # importing necessary python packages
  nuvolos <- import_nuvolos() 
  pd <- reticulate::import("pandas")
- datetime <- reticulate::import("datetime")
 
  username <- NULL
  password <- NULL
@@ -57,8 +56,8 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL){
    if (typeof(result[,i]) == "list"){
      if (class(result[,i][[1]])[1] == "datetime.date"){
        
-       # returning date format as string if parse_dates is not specified.
-       result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x$isoformat()}}))
+       # returning date format if parse_dates is not specified.
+       result[,i] <- as.POSIXct(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
      }
      else {
      result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
