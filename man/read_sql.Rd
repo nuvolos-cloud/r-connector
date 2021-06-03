@@ -4,7 +4,7 @@
 \alias{read_sql}
 \title{Execute SQL SELECT statements from Nuvolos.cloud}
 \usage{
-read_sql(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL)
+read_sql(sql, dbname = NULL, schemaname = NULL)
 }
 \arguments{
 \item{sql}{SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).}
@@ -12,10 +12,6 @@ read_sql(sql, dbname = NULL, schemaname = NULL, parse_dates = NULL)
 \item{dbname}{The name of the database from which the SELECT statement will be executed.}
 
 \item{schemaname}{The name of the schema from which the SELECT statement will be executed.}
-
-\item{parse_dates}{In case the table contains date columns, they can be given here to read them as date in R. In case the date is stored as character in the table, it will be read as character when not specifying parse_dates.
-In case parse_dates is not specified, but the data is stored in date format in the table, the function returns the dates as string. In case parse_dates is specified, the dates are returned with time as well in POSIXct format. 
-In case there were no time specified in the original table, the R uses the default value. To get rid of the time, you can use db$Date <- as.Date(db$Date, "\%Y-\%m-\%d") expression for example.}
 }
 \value{
 Returns an R dataframe object.
@@ -27,6 +23,5 @@ On Nuvolos the database and schema are by default the ones the user is working i
 }
 \examples{
 db <- read_sql("SELECT * FROM table")
-db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema", parse_dates = c("date1", "date2"))
-
+db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema")
 }
