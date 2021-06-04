@@ -7,7 +7,7 @@
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
 #' @param dbname The name of the database from which the SELECT statement will be executed.
 #' @param schemaname The name of the schema from which the SELECT statement will be executed.
-#' @return Returns an R dataframe object. When date format columns are in the table, they are returned as POSIXct. 
+#' @return Returns an R dataframe object. When date format columns are in the table, they are returned as Date. 
 #' 
 #' @examples
 #' db <- read_sql("SELECT * FROM table")
@@ -53,7 +53,7 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
      if (class(result[,i][[1]])[1] == "datetime.date"){
        
        # returning dates in posixct format if stored as dates.
-       result[,i] <- as.POSIXct(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
+       result[,i] <- as.Date(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
      }
      else {
      result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
