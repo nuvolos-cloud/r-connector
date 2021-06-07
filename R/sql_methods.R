@@ -53,16 +53,15 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
      
      # finding the first not null element in the list to determine its class. If it is python's datetime.date, returning it as Date.
      k = 1
-     if (is.null(result[,i][[1]])) {
-       while (is.null(result[,i][[k]])) {
-         k = k +1
+     while (is.null(result[,i][[k]])) {
+         k <- k +1
+     }
+     
+     if (k <= length(result[,i])) {
+       if (class(result[,i][[k]])[1] == "datetime.date"){
+         result[,i] <- as.Date(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
        }
      }
-     
-     if (class(result[,i][[k]])[1] == "datetime.date"){
-       result[,i] <- as.Date(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
-     }
-     
      # if the type is not datetime.date, just unlisting the columns and replacing NULLs with NA-s.
      else {
        result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
