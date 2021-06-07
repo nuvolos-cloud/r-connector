@@ -59,7 +59,7 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
        }
      }
      
-     if (class(result[,i][[1]])[k] == "datetime.date"){
+     if (class(result[,i][[k]])[1] == "datetime.date"){
        result[,i] <- as.Date(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
      }
      
