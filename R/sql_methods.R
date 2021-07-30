@@ -16,58 +16,58 @@
 read_sql <- function(sql, dbname = NULL, schemaname = NULL){
 
 
- # importing necessary python packages
- nuvolos <- import_nuvolos() 
- pd <- reticulate::import("pandas")
+# importing necessary python packages
+  nuvolos <- import_nuvolos() 
+  pd <- reticulate::import("pandas")
 
- username <- NULL
- password <- NULL
- 
- # reading credentials for establishing connection
- conn_param <- get_credentials(username, password, dbname, schemaname)
- 
- username <- conn_param[['username']]
- password <- conn_param[['password']]
- dbname  <- conn_param[['dbname']]
- schemaname <- conn_param[['schemaname']]
- 
- # creating engine and establishing connection with python-based nuvolos connector
- engine <- nuvolos$get_engine(username = username,
-                               password = password,
-                               dbname = dbname,
-                               schemaname = schemaname)
- con <- engine$connect()
- 
- # using python's pandas.read_sql() method execute select query. 
- # After execution the connection is closed and the engine is disposed.
- tryCatch({
-   result <- pd$read_sql(sql, con)
- }, finally = {
-   con$close()
-   engine$dispose()
- })
- 
- # Unlisting list column types. Also substituting NULL values to NA to remain consistent.
- for (i in seq(1,ncol(result))){
-   if (typeof(result[,i]) == "list"){
-     
-     # finding the first not null element in the list to determine its class. If it is python's datetime.date, returning it as Date.
-     k = 1
-     while (is.null(result[,i][[k]]) && k < length(result[,i])) {  
-        k <- k +1
-     }
+  username <- NULL
+  password <- NULL
+
+  # reading credentials for establishing connection
+  conn_param <- get_credentials(username, password, dbname, schemaname)
+
+  username <- conn_param[['username']]
+  password <- conn_param[['password']]
+  dbname  <- conn_param[['dbname']]
+  schemaname <- conn_param[['schemaname']]
+
+  # creating engine and establishing connection with python-based nuvolos connector
+  engine <- nuvolos$get_engine(username = username,
+                              password = password,
+                              dbname = dbname,
+                              schemaname = schemaname)
+  con <- engine$connect()
+
+  # using python's pandas.read_sql() method execute select query. 
+  # After execution the connection is closed and the engine is disposed.
+  tryCatch({
+    result <- pd$read_sql(sql, con)
+  }, finally = {
+    con$close()
+    engine$dispose()
+  })
+
+  # Unlisting list column types. Also substituting NULL values to NA to remain consistent.
+  for (i in seq(1,ncol(result))){
+    if (typeof(result[,i]) == "list"){
       
-     if (class(result[,i][[k]])[1] == "datetime.date"){
-         result[,i] <- as.Date(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
-     }
-     # if the type is not datetime.date, just unlisting the columns and replacing NULLs with NA-s.
-     else {
-       result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
-     }
-   }
- }
- 
- return(result)
+      # finding the first not null element in the list to determine its class. If it is python's datetime.date, returning it as Date.
+      k = 1
+      while (is.null(result[,i][[k]]) && k < length(result[,i])) {  
+        k <- k +1
+      }
+      
+      if (class(result[,i][[k]])[1] == "datetime.date"){
+          result[,i] <- as.Date(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
+      }
+      # if the type is not datetime.date, just unlisting the columns and replacing NULLs with NA-s.
+      else {
+        result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
+      }
+    }
+  }
+
+  return(result)
 }
 
 
@@ -98,13 +98,13 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
 #'
 #' @export
 to_sql <- function(df,
-                   name,
-                   dbname=NULL,
-                   schemaname=NULL,
-                   if_exists="fail",
-                   index=TRUE,
-                   index_label=NULL,
-                   nanoseconds=FALSE){
+                  name,
+                  dbname=NULL,
+                  schemaname=NULL,
+                  if_exists="fail",
+                  index=TRUE,
+                  index_label=NULL,
+                  nanoseconds=FALSE){
 
 
   # importing necessary python package
@@ -178,9 +178,9 @@ execute <- function(sql, dbname = NULL, schemaname = NULL){
   
   # creating engine and establishing connection with python-based nuvolos connector
   engine <- nuvolos$get_engine(username = username,
-                               password = password,
-                               dbname = dbname,
-                               schemaname = schemaname)
+                                password = password,
+                                dbname = dbname,
+                                schemaname = schemaname)
   con <- engine$connect()
   
   # using python's execute method on the established connection.
@@ -201,11 +201,37 @@ import_nuvolos <- function(){
   nuvolos <- tryCatch({
     reticulate::import("nuvolos")
   }, error = function(e){
-    reticulate::py_install("nuvolos", pip = TRUE)
-    return(reticulate::import("nuvolos"))
+    warning("Could not import nuvolos, we need to install the python package first.")
+    install_nuvolos_pkg()
+    return(invisible())
   })
   
   return(nuvolos)
+}
+
+install_nuvolos_pkg <- function(){
+
+  nv <- tryCatch({
+    reticulate::py_install("nuvolos", pip = TRUE)
+  }, error = function(e){
+    warning("Nuvolos installation cannot be performed. Trying to re-install miniconda first.")
+    install_miniconda()
+    return(invisible())
+  })  
+  return(reticulate::import("nuvolos"))
+}
+
+install_miniconda <- function(){
+  nv <- tryCatch({
+    reticulate::install_miniconda()
+  }, error = function(e){
+    warning("Could not install the miniconda environment. Please contact the Nuvolos support via Intercom!")
+    return(invisible())
+  },
+  finally = {
+    warning("Successfully installed the miniconda environment. Please restart your R session by finding \"Session > Restart R\" in the RStudio menu. \nAfter restarting, please execute your previous statement again - installation will now complete without further interruptions.")
+  })  
+  return(invisible())
 }
 
 get_credentials <- function(username, password, dbname, schemaname){
