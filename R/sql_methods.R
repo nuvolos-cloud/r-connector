@@ -112,8 +112,6 @@ to_sql <- function(df,
   
   username <- NULL
   password <- NULL
-  index <- reticulate::r_to_py(index)
-  nanoseconds <- reticulate::r_to_py(nanoseconds) 
 
   # reading credentials for establishing connection
   conn_param <- get_credentials(username, password, dbname, schemaname)
