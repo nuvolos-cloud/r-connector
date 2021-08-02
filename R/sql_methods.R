@@ -203,6 +203,11 @@ import_nuvolos <- function(){
   nuvolos <- tryCatch({
     reticulate::import("nuvolos")
   }, error = function(e){
+    # checking environment variable to make sure it is set as TRUE, otherwise miniconda installer prompt won't be shown
+    if (Sys.getenv("RETICULATE_MINICONDA_ENABLED")==FALSE){
+      Sys.setenv("RETICULATE_MINICONDA_ENABLED" = TRUE)
+    }
+    # installing and importing nuvolos package
     reticulate::py_install("nuvolos", pip = TRUE)
     return(reticulate::import("nuvolos"))
   })
