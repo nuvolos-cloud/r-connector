@@ -112,6 +112,8 @@ to_sql <- function(df,
   
   username <- NULL
   password <- NULL
+  index <- reticulate::r_to_py(index)
+  nanoseconds <- reticulate::r_to_py(nanoseconds) 
 
   # reading credentials for establishing connection
   conn_param <- get_credentials(username, password, dbname, schemaname)
@@ -136,7 +138,7 @@ to_sql <- function(df,
   arrow::write_feather(df, tf)
   
   tryCatch({
-    reticulate::py_run_string(paste("import pandas as pd;from nuvolos import to_sql;df = pd.read_feather('", tf, "');to_sql(df, ", "'", name, "'", ", database = ","'", dbname,"'", ", schema = ", "'", schemaname, "'", ", if_exists = 'replace', index = False, con = con)",  sep = ""))
+    reticulate::py_run_string(paste("import pandas as pd;from nuvolos import to_sql;df = pd.read_feather('", tf, "');to_sql(df, ", "'", name, "'", ", database = ","'", dbname,"'", ", schema = ", "'", schemaname, "'", ", if_exists = ", "'", if_exists, "'", ", index = ", index, ", nanoseconds =", nanoseconds, ", con = con)",  sep = ""))
   }, finally = {
     reticulate::py_run_string("con.close()")
     reticulate::py_run_string("engine.dispose()")
@@ -201,6 +203,11 @@ import_nuvolos <- function(){
   nuvolos <- tryCatch({
     reticulate::import("nuvolos")
   }, error = function(e){
+    # checking environment variable to make sure it is set as TRUE, otherwise miniconda installer prompt won't be shown
+    if (Sys.getenv("RETICULATE_MINICONDA_ENABLED")==FALSE){
+      Sys.setenv("RETICULATE_MINICONDA_ENABLED" = TRUE)
+    }
+    # installing and importing nuvolos package
     reticulate::py_install("nuvolos", pip = TRUE)
     return(reticulate::import("nuvolos"))
   })
