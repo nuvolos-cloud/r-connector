@@ -1,7 +1,8 @@
 library(nuvolos)
 
 # File for testing to_sql and read_sql functions.
-# number of NA-s, number of rows and basic descriptive statistics are tested
+# Number of NA-s, number of rows, basic descriptive statistics, appending feature
+# are tested.
 # before and after uploading the sample dataframe to Nuvolos.
 # THIS IS NOT AN AUTOMATED TEST, SHOULD BE RUN BY THE DEVELOPER AFTER EVERY
 # CHANGE IN TO_SQL FUNCTION!
@@ -35,4 +36,20 @@ test_that("Descriptive statistics", {
     expect_equal(min(db2[,i]), min(db[,i]))
     
   }
+})
+
+
+rows <- tryCatch({
+  df <- read_sql("select * from test2", dbname="CONNECTOR_TEST", schemaname="R_CONNECTOR")
+  nrow(df)
+}, error = function(e){
+  0
+})
+
+to_sql(db, name="test2", dbname="CONNECTOR_TEST", schemaname="R_CONNECTOR", if_exists="append", index=FALSE)
+
+db3 <- read_sql("select * from test2", dbname="CONNECTOR_TEST", schemaname="R_CONNECTOR")
+
+test_that("Number of rows in appending", {
+  expect_equal(nrow(db3), nrow(db)+rows)
 })
