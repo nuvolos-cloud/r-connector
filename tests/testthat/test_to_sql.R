@@ -53,3 +53,13 @@ db3 <- read_sql("select * from test2", dbname="CONNECTOR_TEST", schemaname="R_CO
 test_that("Number of rows in appending", {
   expect_equal(nrow(db3), nrow(db)+rows)
 })
+
+to_sql(db, name="test3", dbname="CONNECTOR_TEST", schemaname="R_CONNECTOR", if_exists="replace", index=TRUE, index_label = "index")
+
+db4 <- read_sql("select * from test3", index_col = "index", dbname="CONNECTOR_TEST", schemaname="R_CONNECTOR")
+
+test_that("Upload with index", {
+  expect_equal(ncol(db4), ncol(db))
+})
+
+
