@@ -5,16 +5,16 @@
 #' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 #' 
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
-#' @param index_col Name of the column to set as index. Default is NULL.
 #' @param dbname The name of the database from which the SELECT statement will be executed.
 #' @param schemaname The name of the schema from which the SELECT statement will be executed.
+#' @param index_col Name of the column to set as index. Default is NULL.
 #' @return Returns an R dataframe object. When date format columns are in the table, they are returned as Date. 
 #' 
 #' @examples
 #' db <- read_sql("SELECT * FROM table")
-#' db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema")
+#' db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema", index_col = "index")
 #' @export
-read_sql <- function(sql, index_col = NULL, dbname = NULL, schemaname = NULL){
+read_sql <- function(sql, dbname = NULL, schemaname = NULL, index_col = NULL){
 
 
  # importing necessary python packages
