@@ -9,7 +9,7 @@ library(nuvolos)
 # In order to run the tests, first delete the nuvolos username + password from
 # keyring and use the CONNECTOR_TEST user.
 
-db <- read_sql("select * from orders limit 500000", dbname="SNOWFLAKE_SAMPLE_DATA", schemaname="TPCH_SF100")
+db <- read_sql("select * from orders limit 100000", dbname="SNOWFLAKE_SAMPLE_DATA", schemaname="TPCH_SF100")
 
 db[20:200,] <- NA
 
