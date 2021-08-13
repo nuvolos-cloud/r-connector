@@ -62,6 +62,9 @@ read_sql <- function(sql, index_col = NULL, dbname = NULL, schemaname = NULL){
          result[,i] <- as.Date(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
      }
      # if the type is not datetime.date, just unlisting the columns and replacing NULLs with NA-s.
+     else if (class(result[,i][[k]])[1] == "datetime.time") {
+       result[,i] <- hms::as_hms(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
+     }
      else {
        result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
      }
