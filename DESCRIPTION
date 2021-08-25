@@ -1,7 +1,7 @@
 Package: nuvolos
 Type: Package
 Title: R connector to Nuvolos 
-Version: 0.1.3
+Version: 0.1.4
 Author: Alphacruncher AG
 Maintainer: Andras Sali <andras.sali@alphacruncher.com>
 Description: Functions to work with nuvolos.cloud data through R.
@@ -9,4 +9,7 @@ License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Imports: arrow, DBI, ini, keyring, odbc, reticulate (>= 1.20), rstudioapi 
+Imports: arrow, DBI, hms, ini, keyring, odbc, reticulate (>= 1.20), rstudioapi 
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

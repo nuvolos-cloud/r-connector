@@ -4,7 +4,7 @@
 \alias{read_sql}
 \title{Execute SQL SELECT statements from Nuvolos.cloud}
 \usage{
-read_sql(sql, dbname = NULL, schemaname = NULL)
+read_sql(sql, dbname = NULL, schemaname = NULL, index_col = NULL)
 }
 \arguments{
 \item{sql}{SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).}
@@ -12,6 +12,8 @@ read_sql(sql, dbname = NULL, schemaname = NULL)
 \item{dbname}{The name of the database from which the SELECT statement will be executed.}
 
 \item{schemaname}{The name of the schema from which the SELECT statement will be executed.}
+
+\item{index_col}{Name of the column to set as index. Default is NULL.}
 }
 \value{
 Returns an R dataframe object. When date format columns are in the table, they are returned as Date.
@@ -23,5 +25,5 @@ On Nuvolos the database and schema are by default the ones the user is working i
 }
 \examples{
 db <- read_sql("SELECT * FROM table")
-db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema")
+db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema", index_col = "index")
 }

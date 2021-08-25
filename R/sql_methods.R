@@ -7,13 +7,14 @@
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
 #' @param dbname The name of the database from which the SELECT statement will be executed.
 #' @param schemaname The name of the schema from which the SELECT statement will be executed.
+#' @param index_col Name of the column to set as index. Default is NULL.
 #' @return Returns an R dataframe object. When date format columns are in the table, they are returned as Date. 
 #' 
 #' @examples
 #' db <- read_sql("SELECT * FROM table")
-#' db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema")
+#' db <- read_sql("SELECT * FROM table", dbname = "space_1", schemaname = "test_schema", index_col = "index")
 #' @export
-read_sql <- function(sql, dbname = NULL, schemaname = NULL){
+read_sql <- function(sql, dbname = NULL, schemaname = NULL, index_col = NULL){
 
 
  # importing necessary python packages
@@ -41,7 +42,7 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
  # using python's pandas.read_sql() method execute select query. 
  # After execution the connection is closed and the engine is disposed.
  tryCatch({
-   result <- pd$read_sql(sql, con)
+   result <- pd$read_sql(sql = sql, con = con, index_col = index_col)
  }, finally = {
    con$close()
    engine$dispose()
@@ -61,6 +62,9 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL){
          result[,i] <- as.Date(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
      }
      # if the type is not datetime.date, just unlisting the columns and replacing NULLs with NA-s.
+     else if (class(result[,i][[k]])[1] == "datetime.time") {
+       result[,i] <- hms::as_hms(unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {as.character(x)}})))
+     }
      else {
        result[,i] <- unlist(lapply(result[,i], function(x) {if (is.null(x)){NA} else {x}}))
      }
