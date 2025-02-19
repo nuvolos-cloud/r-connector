@@ -214,7 +214,7 @@ import_nuvolos <- function(){
       Sys.setenv("RETICULATE_MINICONDA_ENABLED" = TRUE)
     }
     # installing and importing nuvolos package
-    reticulate::py_install("nuvolos>=0.6.1", pip = TRUE, ,pip_ignore_installed=TRUE)
+    reticulate::py_install("nuvolos>=0.6.2", pip = TRUE, ,pip_ignore_installed=TRUE)
     return(reticulate::import("nuvolos"))
   })
   
