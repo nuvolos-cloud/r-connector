@@ -107,8 +107,7 @@ to_sql <- function(df,
                    schemaname=NULL,
                    if_exists="fail",
                    index=TRUE,
-                   index_label=NULL,
-                   nanoseconds=FALSE){
+                   index_label=NULL){
 
 
   # importing necessary python package
@@ -117,7 +116,6 @@ to_sql <- function(df,
   username <- NULL
   password <- NULL
   index <- reticulate::r_to_py(index)
-  nanoseconds <- reticulate::r_to_py(nanoseconds) 
 
   # reading credentials for establishing connection
   conn_param <- get_credentials(username, password, dbname, schemaname)
@@ -128,7 +126,11 @@ to_sql <- function(df,
   schemaname <- conn_param[['schemaname']]
   
   # creating engine and establishing connection with python-based nuvolos connector
-  reticulate::py_run_string(paste("from nuvolos import get_engine; engine = get_engine(dbname = ","'", dbname,"'", ", schemaname = ", "'", schemaname, "'", ", username = ", "'", username, "'", ", password = ", "'", password, "'", ")", sep = ""))
+  if (!is.null(password)) {
+    reticulate::py_run_string(paste("from nuvolos import get_engine; engine = get_engine(dbname = ","'", dbname,"'", ", schemaname = ", "'", schemaname, "'", ", username = ", "'", username, "'", ", password = ", "'", password, "'", ")", sep = ""))
+  } else {
+    reticulate::py_run_string(paste("from nuvolos import get_engine; engine = get_engine(dbname = ","'", dbname,"'", ", schemaname = ", "'", schemaname, "'", ", username = ", "'", username, "')", sep = ""))
+  }
   reticulate::py_run_string("con = engine.connect()")
   
   # using nuvolos.to_sql function to create table in the selected database and schema.
@@ -142,7 +144,7 @@ to_sql <- function(df,
   arrow::write_feather(df, tf)
   
   tryCatch({
-    reticulate::py_run_string(paste("import pandas as pd;from nuvolos import to_sql;df = pd.read_feather('", tf, "');to_sql(df, ", "'", name, "'", ", database = ","'", dbname,"'", ", schema = ", "'", schemaname, "'", ", if_exists = ", "'", if_exists, "'", ", index = ", index, ", nanoseconds =", nanoseconds, ", con = con)",  sep = ""))
+    reticulate::py_run_string(paste("import pandas as pd;from nuvolos import to_sql;df = pd.read_feather('", tf, "');to_sql(df, ", "'", name, "'", ", database = ","'", dbname,"'", ", schema = ", "'", schemaname, "'", ", if_exists = ", "'", if_exists, "'", ", index = ", index, ", con = con)",  sep = ""))
   }, finally = {
     reticulate::py_run_string("con.close()")
     reticulate::py_run_string("engine.dispose()")
@@ -212,7 +214,7 @@ import_nuvolos <- function(){
       Sys.setenv("RETICULATE_MINICONDA_ENABLED" = TRUE)
     }
     # installing and importing nuvolos package
-    reticulate::py_install("nuvolos", pip = TRUE, ,pip_ignore_installed=TRUE)
+    reticulate::py_install("nuvolos>=0.6.0", pip = TRUE, ,pip_ignore_installed=TRUE)
     return(reticulate::import("nuvolos"))
   })
   
@@ -220,11 +222,17 @@ import_nuvolos <- function(){
 }
 
 get_credentials <- function(username, password, dbname, schemaname){
+  # Check if using key-pair authentication
+  private_key_file <- Sys.getenv("SNOWFLAKE_RSA_KEY", "/secrets/snowflake_rsa_private_key")
+  
+  # Check if the file exists and set the key-pair authentication flag
+  using_key_auth <- file.exists(private_key_file)
+
   # checking whether user is on Nuvolos, asking for credentials if not
   if (is_local()){
-    return(get_local_info(username, password, dbname, schemaname))
+    return(get_local_info(username, password, dbname, schemaname, using_key_auth))
   } else {
-    cred <- get_nuvolos_info(username, password, dbname, schemaname)
+    cred <- get_nuvolos_info(username, password, dbname, schemaname, using_key_auth)
     # getting rid of the extra quotation marks around the dbname and schemaname
     cred[3:4] <-lapply(cred[3:4], function(x) if (length(unlist(strsplit(x,'"')))>1) {unlist(strsplit(x,'"'))[2]} else {x})
     return(cred)

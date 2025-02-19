@@ -32,40 +32,35 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   dbname = conn_param[['dbname']]
   schemaname = conn_param[['schemaname']]
   
-  sysname  <- Sys.info()["sysname"]
-  if (sysname == "Linux") {
-    con <- odbc::dbConnect(odbc::odbc(),
-                           uid=username,
-                           pwd=password,
-                           driver="SnowflakeDSIIDriver",
-                           server="alphacruncher.eu-central-1.snowflakecomputing.com",
-                           database=dbname,
-                           schema=schemaname,
-                           role=username,
-                           tracing=0)
-
-  } else if (sysname == "Windows") {
-    con <- odbc::dbConnect(odbc::odbc(),
-                           uid = username,
-                           pwd = password,
-                           driver = "SnowflakeDSIIDriver",
-                           server = "alphacruncher.eu-central-1.snowflakecomputing.com",
-                           database = dbname,
-                           schema = schemaname,
-                           role = username,
-                           tracing = 0)
-
-  } else if (sysname == "Darwin") {
-    con <- odbc::dbConnect(odbc::odbc(),
-                           uid=username,
-                           pwd=password,
-                           driver="/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib",
-                           server="alphacruncher.eu-central-1.snowflakecomputing.com",
-                           database=dbname,
-                           schema=schemaname,
-                           role=username,
-                           tracing=0)
+  # Check for RSA key authentication
+  rsa_key <- Sys.getenv("SNOWFLAKE_RSA_KEY", "")
+  rsa_key_passphrase <- Sys.getenv("SNOWFLAKE_RSA_KEY_PASSPHRASE", "")
+  
+  # Base connection parameters
+  conn_params <- list(
+    uid = username,
+    driver = if (sysname == "Darwin") "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib" else "SnowflakeDSIIDriver",
+    server = "alphacruncher.eu-central-1.snowflakecomputing.com",
+    database = dbname,
+    schema = schemaname,
+    role = username,
+    tracing = 0
+  )
+  
+  # Add authentication parameters
+  if (rsa_key != "") {
+    conn_params$authenticator <- "snowflake_jwt"
+    conn_params$private_key_file <- rsa_key
+    if (rsa_key_passphrase != "") {
+      conn_params$private_key_pwd <- rsa_key_passphrase
+    }
+  } else {
+    conn_params$pwd <- password
   }
+
+  sysname <- Sys.info()["sysname"]
+  con <- do.call(odbc::dbConnect, c(odbc::odbc(), conn_params))
+
   options(odbc.batch_rows = 10000)
   return(con)
 }
@@ -96,26 +91,37 @@ get_nuvolos_db_path <- function() {
   return(list(dbname = db_name, schemaname = schema_name))
 }
 
+
+input_nuvolos_username <- function() {
+  username <- rstudioapi::askForSecret(name = "username", message = "Please input your Nuvolos username:", title = 'Nuvolos username')
+  keyring::key_set_with_value("nuvolos", "username", username)
+}
+
+
 #' Function input_nuvolos_credential()
 #' Using outside of Nuvolos only. This helps the user to store credentials safely at local device.
 #' @export
 input_nuvolos_credential <- function(){
-  # store username & password
-  username <- rstudioapi::askForSecret(name = "username", message = "Please input your Nuvolos username:", title = 'Nuvolos username')
-  keyring::key_set_with_value("nuvolos", "username", username)
+  input_nuvolos_username()
   
   password <- rstudioapi::askForSecret(name = "password", message = "Please input your Nuvolos password:", title = 'Nuvolos password')
   keyring::key_set_with_value("nuvolos", username, password)
 }
 
-credd_from_local <- function(){
-  # retrieve username & password
+
+username_from_local <- function() {
   tryCatch({
     username = keyring::key_get("nuvolos", "username")
   }, error = function (){
-    username <- rstudioapi::askForSecret(name = "username", message = "Please input your Nuvolos username:", title = 'Nuvolos username')
-    keyring::key_set_with_value("nuvolos", "username", username)
+    input_nuvolos_username()
+    username <- keyring::key_get("nuvolos", "username")
   })
+  return(username)
+}
+
+
+credd_from_local <- function(){
+  username <- username_from_local()
   
   tryCatch({
     password = keyring::key_get("nuvolos", username)
@@ -136,22 +142,31 @@ is_local <- function(){
   return(local)
 }
 
-get_local_info <- function(username = NULL, password = NULL, dbname = NULL, schemaname = NULL){
-  # Find credentials from local, if not, create one by keyring
-  if (is.null(username) && is.null(password)) {
-    cred <- tryCatch({
-      credd_from_local()
-    }, error = function(e) {
-      input_nuvolos_credential()
-      cred <- credd_from_local()
-      return(cred)
-    })
-    username = cred[['username']]
-    password = cred[['password']]
-  } else if(is.null(username) && !is.null(password) ) {
-    stop("Inconsistent input: username is missing, but password was provided. Please specify a username or leave both arguments as NULL.")
-  } else if(!is.null(username) && is.null(password) ) {
-    stop("Inconsistent input: password is missing, but username was provided. Please specify a password or leave both arguments as NULL.")
+get_local_info <- function(username = NULL, 
+                           password = NULL, 
+                           dbname = NULL, 
+                           schemaname = NULL, 
+                           using_key_auth = FALSE){
+  if (!using_key_auth) {
+    if (is.null(username) && is.null(password)) {
+      cred <- tryCatch({
+        credd_from_local()
+      }, error = function(e) {
+        input_nuvolos_credential()
+        cred <- credd_from_local()
+        return(cred)
+      })
+      username = cred[['username']]
+      password = cred[['password']]
+    } else if(is.null(username) && !is.null(password) ) {
+      stop("Inconsistent input: username is missing, but password was provided. Please specify a username or leave both arguments as NULL.")
+    } else if(!is.null(username) && is.null(password) ) {
+      stop("Inconsistent input: password is missing, but username was provided. Please specify a password or leave both arguments as NULL.")
+    }
+  } else {
+    if (is.null(username)) {
+      username <- username_from_local()
+    }
   }
   
   ## DB & SCHEMA ##
@@ -160,10 +175,15 @@ get_local_info <- function(username = NULL, password = NULL, dbname = NULL, sche
     stop("Inconsistent input: please provide both dbname and schemaname.")
   }
   
-  return(list('username'=username, 'password'=password, 'dbname'=dbname, 'schemaname'=schemaname))
+  return(list('username'=username, 'password'=if (!using_key_auth) password else NULL, 
+              'dbname'=dbname, 'schemaname'=schemaname))
 }
 
-get_nuvolos_info <- function(username = NULL, password = NULL, dbname = NULL, schemaname = NULL){
+get_nuvolos_info <- function(username = NULL, 
+                             password = NULL, 
+                             dbname = NULL, 
+                             schemaname = NULL, 
+                             using_key_auth = FALSE){
   # Relying on get_nuvolos_db_path() to find db and schema. 
   if (is.null(dbname) && is.null(schemaname)) {
     conn_info <- get_nuvolos_db_path()
@@ -176,32 +196,52 @@ get_nuvolos_info <- function(username = NULL, password = NULL, dbname = NULL, sc
   }
   
   # Using Kube secret files to substitute.
-  if (is.null(username) && is.null(password)) {
-    
-    path_user <- '/secrets/username'
-    path_token <- '/secrets/snowflake_access_token'
-    
-    if (file.exists(path_user) && file.exists(path_token)) {
-      con_user <- file(path_user, "r")
-      line_user <- readLines(con_user, n = 1, warn = FALSE)
-      close(con_user)
+  if (!using_key_auth) {
+    if (is.null(username) && is.null(password)) {
       
-      if( length(line_user) == 0){
-        stop(paste0('Could not parse username file, first line of ', path_user, ' is empty.'))
+      path_user <- '/secrets/username'
+      path_token <- '/secrets/snowflake_access_token'
+      
+      if (file.exists(path_user) && file.exists(path_token)) {
+        con_user <- file(path_user, "r")
+        line_user <- readLines(con_user, n = 1, warn = FALSE)
+        close(con_user)
+        
+        if( length(line_user) == 0){
+          stop(paste0('Could not parse username file, first line of ', path_user, ' is empty.'))
+        }
+        username <- line_user
+        
+        con_pw <- file(path_token, "r")
+        line_pw <- readLines(con_pw, n = 1, warn = FALSE)
+        close(con_pw)
+        
+        if (length(line_pw) == 0 ){
+          stop(paste0('Could not parse token file, first line of ', path_token ,' is empty.'))
+        }
+        password <- line_pw
+      } else {
+        stop("Could not read database credentials from /secrets.")
       }
-      username <- line_user
+    }
+  } else {
+    if (is.null(username)) {
+      path_user <- '/secrets/username'
       
-      con_pw <- file(path_token, "r")
-      line_pw <- readLines(con_pw, n = 1, warn = FALSE)
-      close(con_pw)
-      
-      if (length(line_pw) == 0 ){
-        stop(paste0('Could not parse token file, first line of ', path_token ,' is empty.'))
+      if (file.exists(path_user)) {
+        con_user <- file(path_user, "r")
+        line_user <- readLines(con_user, n = 1, warn = FALSE)
+        close(con_user)
+        
+        if( length(line_user) == 0){
+          stop(paste0('Could not parse username file, first line of ', path_user, ' is empty.'))
+        }
+        username <- line_user
+      } else {
+        stop("Could not read database username from /secrets.")
       }
-      password <- line_pw
-    } else {
-      stop("Cannot find correct credential...")
     }
   }
-  return(list('username'=username, 'password'=password, 'dbname'=dbname, 'schemaname'=schemaname))
+  return(list('username'=username, 'password'=if (!using_key_auth) password else NULL, 
+              'dbname'=dbname, 'schemaname'=schemaname))
 }
