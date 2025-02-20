@@ -33,9 +33,10 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   schemaname = conn_param[['schemaname']]
   
   # Check for RSA key authentication
-  rsa_key <- Sys.getenv("SNOWFLAKE_RSA_KEY", "")
-  rsa_key_passphrase <- Sys.getenv("SNOWFLAKE_RSA_KEY_PASSPHRASE", "")
+  rsa_key <- Sys.getenv("SNOWFLAKE_RSA_KEY", "/secrets/snowflake_rsa_private_key")
+  rsa_key_passphrase <- Sys.getenv("SNOWFLAKE_RSA_KEY_PASSPHRASE")
   
+  sysname <- Sys.info()["sysname"]
   # Base connection parameters
   conn_params <- list(
     uid = username,
@@ -49,16 +50,16 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   
   # Add authentication parameters
   if (rsa_key != "") {
-    conn_params$authenticator <- "snowflake_jwt"
-    conn_params$private_key_file <- rsa_key
-    if (rsa_key_passphrase != "") {
-      conn_params$private_key_pwd <- rsa_key_passphrase
+    conn_params$AUTHENTICATOR <- "SNOWFLAKE_JWT"
+    conn_params$PRIV_KEY_FILE <- rsa_key
+  if (!is.null(rsa_key_passphrase)) {
+      conn_params$PRIV_KEY_FILE_PWD <- rsa_key_passphrase
     }
   } else {
     conn_params$pwd <- password
   }
 
-  sysname <- Sys.info()["sysname"]
+  
   con <- do.call(odbc::dbConnect, c(odbc::odbc(), conn_params))
 
   options(odbc.batch_rows = 10000)

@@ -84,6 +84,8 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, index_col = NULL){
 #' 
 #' @param df Name of the R dataframe to be written to a table.
 #' @param name The name of the database table. It will only be quoted and case sensitive if it contains keywords or special chars
+#' @param username The username to use. If NULL, it will be read from the local environment on Nuvolos or prompted from the user.
+#' @param password The password to use. If NULL, it will be read from the local environment on Nuvolos or prompted from the user. If the SNOWFLAKE_RSA_KEY environment variable is set, the password is not needed.
 #' @param dbname The name of the database to which data will be inserted.
 #' @param schemaname The name of the schema to which data will be inserted.
 #' @param if_exists How to behave if the table already exists. {‘fail’, ‘replace’, ‘append’}, default ‘fail’
@@ -94,7 +96,6 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, index_col = NULL){
 #' }
 #' @param index bool, default True: Write DataFrame index as a column. Uses index_label as the column name in the table.
 #' @param index_label column label for index column(s). If None is given (default) and index is True, then the index names are used. A sequence should be given if the DataFrame uses MultiIndex.
-#' @param nanoseconds if True, nanosecond timestamps will be used to upload the data. Limits timestamp range from 1677-09-21 00:12:43.145224192 to 2262-04-11 23:47:16.854775807.
 #'
 #' @examples
 #' to_sql(df = df, name = "table", if_exists = 'replace', index = FALSE)
@@ -103,6 +104,8 @@ read_sql <- function(sql, dbname = NULL, schemaname = NULL, index_col = NULL){
 #' @export
 to_sql <- function(df,
                    name,
+                   username=NULL,
+                   password=NULL,
                    dbname=NULL,
                    schemaname=NULL,
                    if_exists="fail",
@@ -112,9 +115,6 @@ to_sql <- function(df,
 
   # importing necessary python package
   nuvolos <- import_nuvolos()
-  
-  username <- NULL
-  password <- NULL
   index <- reticulate::r_to_py(index)
 
   # reading credentials for establishing connection
@@ -159,6 +159,8 @@ to_sql <- function(df,
 #' On Nuvolos the database and schema are by default the ones the user is working in, from local machine they need to be specified.
 #' 
 #' @param sql SQL statement to be executed. Note that quoting the tables is needed only if the table name is case sensitive (it contains both upper and lowercase letters or special chars).
+#' @param username The username to use. If NULL, it will be read from the local environment on Nuvolos or prompted from the user.
+#' @param password The password to use. If NULL, it will be read from the local environment on Nuvolos or prompted from the user. If the SNOWFLAKE_RSA_KEY environment variable is set, the password is not needed.
 #' @param dbname The name of the database from/in which the statement will be executed.
 #' @param schemaname The name of the schema from/in which the statement will be executed.
 #' @return Returns the result of python's execute method.
@@ -168,13 +170,10 @@ to_sql <- function(df,
 #' execute("DROP TABLE table", dbname = "space_1", schemaname = "test_schema")
 
 #' @export
-execute <- function(sql, dbname = NULL, schemaname = NULL){
+execute <- function(sql, username = NULL, password = NULL, dbname = NULL, schemaname = NULL){
 
   # importing necessary python package
   nuvolos <- import_nuvolos()
-  
-  username <- NULL
-  password <- NULL
   
   # reading credentials for establishing connection
   conn_param <- get_credentials(username, password, dbname, schemaname)
