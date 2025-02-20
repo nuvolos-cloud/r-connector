@@ -36,11 +36,11 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   rsa_key <- Sys.getenv("SNOWFLAKE_RSA_KEY", "/secrets/snowflake_rsa_private_key")
   rsa_key_passphrase <- Sys.getenv("SNOWFLAKE_RSA_KEY_PASSPHRASE")
   
-  sysname <- Sys.info()[["sysname"]]
+  sysinfo <- Sys.info()
   # Base connection parameters
   conn_params <- list(
     uid = username,
-    driver = if (sysname == "Darwin") "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib" else "SnowflakeDSIIDriver",
+    driver = if (sysinfo["sysname"] == "Darwin") "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib" else "SnowflakeDSIIDriver",
     server = "alphacruncher.eu-central-1.snowflakecomputing.com",
     database = dbname,
     schema = schemaname,
