@@ -36,7 +36,7 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   rsa_key <- Sys.getenv("SNOWFLAKE_RSA_KEY", "/secrets/snowflake_rsa_private_key")
   rsa_key_passphrase <- Sys.getenv("SNOWFLAKE_RSA_KEY_PASSPHRASE")
   
-  sysname <- Sys.info()["sysname"]
+  sysname <- Sys.info()[["sysname"]]
   # Base connection parameters
   conn_params <- list(
     uid = username,
