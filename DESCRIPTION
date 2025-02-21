@@ -1,9 +1,9 @@
 Package: nuvolos
 Type: Package
 Title: R connector to Nuvolos 
-Version: 0.1.4
+Version: 0.2.0
 Author: Alphacruncher AG
-Maintainer: Andras Sali <andras.sali@alphacruncher.com>
+Maintainer: Alphacruncher <support@nuvolos.cloud>
 Description: Functions to work with nuvolos.cloud data through R.
 License: MIT
 Encoding: UTF-8
