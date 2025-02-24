@@ -213,6 +213,12 @@ import_nuvolos <- function(){
       Sys.setenv("RETICULATE_MINICONDA_ENABLED" = TRUE)
     }
     # installing and importing nuvolos package
+    # the active environment as set by the RETICULATE_PYTHON_ENV variable will be used; if that is unset, then the r-reticulate environment will be used 
+    envname <- Sys.getenv("RETICULATE_PYTHON_ENV")
+    if (envname == ""){
+      envname <- "r-reticulate"
+    }
+    arrow::install_pyarrow(envname=envname)
     reticulate::py_install("nuvolos>=0.6.3", pip = TRUE, ,pip_ignore_installed=TRUE)
     return(reticulate::import("nuvolos"))
   })

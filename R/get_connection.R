@@ -21,10 +21,15 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   require(DBI)
   require(keyring)
   
+  # Check for RSA key authentication
+  rsa_key <- Sys.getenv("SNOWFLAKE_RSA_KEY", "/secrets/snowflake_rsa_private_key")
+  rsa_key_passphrase <- Sys.getenv("SNOWFLAKE_RSA_KEY_PASSPHRASE")
+  using_key_auth <- file.exists(rsa_key)
+
   if (is_local()){
-    conn_param = get_local_info(username, password, dbname, schemaname)
+    conn_param = get_local_info(username, password, dbname, schemaname, using_key_auth)
   } else {
-    conn_param = get_nuvolos_info(username, password, dbname, schemaname)
+    conn_param = get_nuvolos_info(username, password, dbname, schemaname, using_key_auth)
   }
   
   username = conn_param[['username']]
@@ -32,10 +37,7 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   dbname = conn_param[['dbname']]
   schemaname = conn_param[['schemaname']]
   
-  # Check for RSA key authentication
-  rsa_key <- Sys.getenv("SNOWFLAKE_RSA_KEY", "/secrets/snowflake_rsa_private_key")
-  rsa_key_passphrase <- Sys.getenv("SNOWFLAKE_RSA_KEY_PASSPHRASE")
-  
+   
   sysinfo <- Sys.info()
   # Base connection parameters
   conn_params <- list(
