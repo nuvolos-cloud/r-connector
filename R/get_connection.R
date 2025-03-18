@@ -51,10 +51,10 @@ get_connection <- function(username = NULL, password = NULL, dbname = NULL, sche
   )
   
   # Add authentication parameters
-  if (rsa_key != "") {
+  if (using_key_auth) {
     conn_params$AUTHENTICATOR <- "SNOWFLAKE_JWT"
     conn_params$PRIV_KEY_FILE <- rsa_key
-  if (!is.null(rsa_key_passphrase)) {
+    if (!is.null(rsa_key_passphrase)) {
       conn_params$PRIV_KEY_FILE_PWD <- rsa_key_passphrase
     }
   } else {
